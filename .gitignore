@@ -29,6 +29,7 @@
 *.dylib
 
 # Executables
+bin/*
 *.exe
 *.out
 *.app
@@ -52,3 +53,6 @@ Mkfile.old
 dkms.conf
 
 .idea/
+
+# docker env archives
+env.tar.gz
