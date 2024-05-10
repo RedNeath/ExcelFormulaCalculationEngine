@@ -36,6 +36,10 @@ bin/*
 *.x86_64
 *.hex
 
+# Log files
+log/*
+*.log
+
 # Debug files
 *.dSYM/
 *.su
