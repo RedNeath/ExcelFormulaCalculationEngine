@@ -97,3 +97,19 @@ Once all preliminary tasks accomplished, the result of the formula can finally b
 
 Here's what it would give on our example:
 ![dfs.gif](doc/dfs.gif)
+
+## Building the project
+In order to build the project on your own, you are going to need `make`.
+
+More specifically, you have three options:
+- The `make` command, at the root of the project, which will simply compile a version of the library as a shared object (.so) out in the `bin` folder.
+- The `make tests` command, at the root too, which will build the library, like the previous command, but the tests also, and start executing them.
+- The `make install` command, at the root, which will build the library, and move it to your `/usr/local/lib/` directory, enabling you to use it in your projects.
+
+> **NOTE:**  
+> The `make install` needs access to a directory owned by the root user, therefore it will need root permissions to work. Once installed, to include it in your project, add the `-lefce` option when compiling. If it doesn't work, try to verify that your linker searches in your `/usr/local/lib` directory and add it in your library search path if it isn't.
+> 
+> Also, this command is platform specific, contrarily to the two preceding ones. Sorry to put it that way, but as I don't use Windows on a regular basis, I will not document a way to install the library on that platform for now, so you will have to install it by yourself.
+
+### Project dependencies
+Of course, the project depends on **Make**, but also on **Docker**, so you will need to have those two packages installed on your machine.

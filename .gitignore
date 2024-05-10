@@ -18,7 +18,6 @@
 
 # Libraries
 *.lib
-*.a
 *.la
 *.lo
 
@@ -29,12 +28,17 @@
 *.dylib
 
 # Executables
+bin/*
 *.exe
 *.out
 *.app
 *.i*86
 *.x86_64
 *.hex
+
+# Log files
+log/*
+*.log
 
 # Debug files
 *.dSYM/
@@ -52,3 +56,6 @@ Mkfile.old
 dkms.conf
 
 .idea/
+
+# docker env archives
+env.tar.gz
