@@ -2,10 +2,13 @@ FROM ubuntu:latest
 LABEL authors="redneath"
 
 RUN apt-get update &&\
-    apt-get install build-essential -y
+    apt-get install build-essential -y &&\
+    mkdir -p /home/ubuntu/ExcelFormulaCalculationEngine/bin
 
-RUN gcc -Wall -shared -o bin/libefce.so -fPIC src/efce.c
+WORKDIR /home/ubuntu/ExcelFormulaCalculationEngine
 
-# Build & run the tests
-RUN gcc -Wall -g tests/tests.c -o bin/tests -L./bin/ -lefce \
-    bin/tests
+ENTRYPOINT ["gcc"]
+CMD ["-Wall", "-shared", "-o", "lib/libefce.so", "-fPIC", "src/efce.c"]
+
+ENTRYPOINT ["gcc"]
+CMD ["-Wall", "-L/home/ubuntu/ExcelFormulaCalculationEngine/lib", "-o", "bin/tests", "tests/tests.c", "-lmunit", "-lefce", "&&", "./bin/tests"]
