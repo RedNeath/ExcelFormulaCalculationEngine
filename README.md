@@ -5,6 +5,19 @@ The real purpose of this library is to be used in other contexts than just sprea
 
 I'll detail here the way it is intended to work.
 
+## Table of contents
+- [A three steps workflow](#a-three-steps-workflow)
+  - [Creation of the context](#creation-of-the-context)
+  - [Computation of a formula](#computation-of-a-formula)
+    - [Formula parsing](#formula-parsing)
+      - [1. Recognising the tokens included](#1-recognising-the-tokens-included)
+      - [2. Injecting variable values](#2-injecting-variable-values)
+      - [3. Creating the execution tree](#3-creating-the-execution-tree)
+    - [Formula processing](#formula-processing)
+- [Building the project](#building-the-project)
+  - [Project dependencies](#project-dependencies)
+- [Usage tips!](#usage-tips)
+
 ## A three steps workflow
 
 Detailed below is the workflow followed by the library.
@@ -64,7 +77,7 @@ printf(concatenation);
 #### Formula parsing
 The formula parsing is one of the most crucial steps in the process. It consists in three things:
 
-##### 1. Recognising the tokens included.
+##### 1. Recognising the tokens included
 If we take back our formula `=A1&"_"&B1`, the tokens here are:
 - `A1`, which corresponds to our first variable
 - `&`, which is the concatenation operator
@@ -113,3 +126,9 @@ More specifically, you have three options:
 
 ### Project dependencies
 Of course, the project depends on **Make**, but also on **Docker**, so you will need to have those two packages installed on your machine.
+
+## Usage tips!
+Those tips will allow you to make a better use of the library.
+
+1. Choosing the right order for your formula variables:  
+As you might have noticed, there is no mention of a system to access rapidly each variable within the context. That means the accession is actually sequential, looking for each value one after the other. It is made this way because when creating the library, dealing with huge amounts of formula variables wasn't a key element. So basically, if you're using lots of variables for your formula(s) and your calculations become slow, try to reorganise them, so that the most frequently used ones can be accessed rapidly by putting them at the beginning of the array.
