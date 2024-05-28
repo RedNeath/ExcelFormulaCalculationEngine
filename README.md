@@ -173,7 +173,7 @@ Here the example used cell-like identification names, but you can basically set 
 > The `formula_variable_sentinel` is nothing but a value identified as the end of the list, when met while looping. That is why it is very important to include it.
 > 
 > For the few curious out there, here's what it contains (basically nothing):
-> ```json
+> ```jsonc
 > {
 >     "formula_variable_sentinel": {
 >         "number_value": null,
