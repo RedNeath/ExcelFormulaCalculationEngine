@@ -1,5 +1,5 @@
 //
-// Created by Xiaomi on 23/05/2024.
+// Created by RedNeath on 23/05/2024.
 //
 
 #include "context.h"
@@ -48,18 +48,14 @@ void fast_insert_variables(formula_context context, formula_variable *variables)
 	}
 }
 
-void fast_insert_new_number_variable(formula_context context, char *id, float value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
+void fast_insert_new_number_variable(formula_context context, char *id, double value) {
 	number_variable number = { id, value, TYPE_NUMBER };
 	formula_variable variable = { &number, NULL, NULL, NULL, TYPE_NUMBER };
 
 	fast_insert_variable(context, variable);
 }
 
-void fast_insert_new_rate_variable(formula_context context, char *id, float value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
+void fast_insert_new_rate_variable(formula_context context, char *id, double value) {
 	rate_variable rate = { id, value, TYPE_RATE };
 	formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
 
@@ -67,8 +63,6 @@ void fast_insert_new_rate_variable(formula_context context, char *id, float valu
 }
 
 void fast_insert_new_string_variable(formula_context context, char *id, char *value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
 	string_variable str = { id, value, TYPE_STRING }; // Safe variable name (especially for C++ users)
 	formula_variable variable = { NULL, NULL, &str, NULL, TYPE_STRING };
 
@@ -76,8 +70,6 @@ void fast_insert_new_string_variable(formula_context context, char *id, char *va
 }
 
 void fast_insert_new_date_variable(formula_context context, char *id, unsigned long value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
 	date_variable date = { id, value, TYPE_DATE };
 	formula_variable variable = { NULL, NULL, NULL, &date, TYPE_DATE };
 
@@ -125,18 +117,14 @@ void insert_variables(formula_context context, formula_variable *variables) {
 	}
 }
 
-void insert_new_number_variable(formula_context context, char *id, float value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
+void insert_new_number_variable(formula_context context, char *id, double value) {
 	number_variable number = { id, value, TYPE_NUMBER };
 	formula_variable variable = { &number, NULL, NULL, NULL, TYPE_NUMBER };
 
 	insert_variable(context, variable);
 }
 
-void insert_new_rate_variable(formula_context context, char *id, float value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
+void insert_new_rate_variable(formula_context context, char *id, double value) {
 	rate_variable rate = { id, value, TYPE_RATE };
 	formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
 
@@ -144,8 +132,6 @@ void insert_new_rate_variable(formula_context context, char *id, float value) {
 }
 
 void insert_new_string_variable(formula_context context, char *id, char *value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
 	string_variable str = { id, value, TYPE_STRING }; // Safe variable name (especially for C++ users)
 	formula_variable variable = { NULL, NULL, &str, NULL, TYPE_STRING };
 
@@ -153,8 +139,6 @@ void insert_new_string_variable(formula_context context, char *id, char *value) 
 }
 
 void insert_new_date_variable(formula_context context, char *id, unsigned long value) {
-	// TODO id validation (create a validator that checks the string is capitalised alphanumerical
-	//  characters with a max length of ten)!
 	date_variable date = { id, value, TYPE_DATE };
 	formula_variable variable = { NULL, NULL, NULL, &date, TYPE_DATE };
 

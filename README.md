@@ -239,7 +239,7 @@ On our example again, here's what our tokens would look like after this step:
 Of course, injecting the values will not succeed if they don't exist in the context.
 
 ##### 3. Creating the execution tree
-The execution tree is what defines the execution order of the different operands in the formula. It is indeed affected by operator's priority, whether they are regular (unary or binary) operators, or actual excel functions.
+The execution tree is what defines the execution order of the different operands in the formula. It is indeed affected by operator's priority, whether they are regular (unary or binary) operators, or actual Excel functions.
 
 In our case, this is what the execution tree should be:
 ![img.png](doc/tree.png)
