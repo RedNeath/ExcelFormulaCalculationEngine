@@ -174,12 +174,14 @@ Here the example used cell-like identification names, but you can basically set 
 > 
 > For the few curious out there, here's what it contains (basically nothing):
 > ```json
-> 'formula_variable_sentinel': {
->     'number_value': null,
->     'rate_value': null,
->     'string_value': null,
->     'date_value': null,
->     'type': 0 // = TYPE_SENTINEL
+> {
+>     "formula_variable_sentinel": {
+>         "number_value": null,
+>         "rate_value": null,
+>         "string_value": null,
+>         "date_value": null,
+>         "type": 0 // = TYPE_SENTINEL
+>     }
 > }
 > ```
 
