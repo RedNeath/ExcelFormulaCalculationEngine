@@ -29,45 +29,182 @@ The context is a set of variables that can be called for in the formula to be ca
 
 Here's an example of how to create your own context:
 ```c
-#include "excel_formula_calculation_engine.h"
+#include "/path/to/efce.h"
 
-formula_variable *variables[3] = {
-        {
-            "A1",
-            &((void)1), // important that this is a pointer!
-            EFCE_NUMBER // constant defined in the included header file
-        },
-        {
-            "B1",
-            &((void)"Another variable"),
-            EFCE_STRING // same here
-        }
-};
+formula_context context = create_context(10);
+insert_new_number_variable(context, "A1", 1);
+insert_new_string_variable(context, "B1", "Another variable");
 
-// Notice that the memory of the context will not be altered by the engine.
-// That means that if you allocate memory, you will bre responsible for freeing it too.
+/* Now the context contains the following (as json):
+ * 'context': {
+ *     'variables': [
+ *         {
+ *             'type': 1, // = TYPE_NUMBER
+ *             'number_value': {
+ *                 'id': "A1",
+ *                 'value': 1,
+ *                 'type': 1 // = TYPE_NUMBER
+ *             },
+ *             'rate_value': null,
+ *             'string_value': null,
+ *             'date_value': null
+ *         },
+ *         {
+ *             'type': 3, // = TYPE_STRING
+ *             'number_value': null,
+ *             'rate_value': null,
+ *             'string_value': {
+ *                 'id': "B1",
+ *                 'value': "Another variable",
+ *                 'type': 3 // = TYPE_STRING
+ *             },
+ *             'date_value': null
+ *         }
+ *     ]
+ * }
+ */
+ 
+// Adding a self-prepared variable, and overwriting an existing one
+rate_variable rate = { "A1", 0.25, TYPE_RATE };
+formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
+insert_variable(context, variable);
+
+/* Now the context contains the following (as json):
+ * 'context': {
+ *     'variables': [
+ *         {
+ *             'type': 2, // = TYPE_RATE
+ *             'number_value': null,
+ *             'rate_value': {
+ *                 'id': "A1",
+ *                 'value': 0.25,
+ *                 'type': 2 // = TYPE_RATE
+ *             },
+ *             'string_value': null,
+ *             'date_value': null
+ *         },
+ *         {
+ *             'type': 3, // = TYPE_STRING
+ *             'number_value': null,
+ *             'rate_value': null,
+ *             'string_value': {
+ *                 'id': "B1",
+ *                 'value': "Another variable",
+ *                 'type': 3 // = TYPE_STRING
+ *             },
+ *             'date_value': null
+ *         }
+ *     ]
+ * }
+ */
+ 
+// Using (in a wrong way) the fast insertion
+rate_variable new_rate = { "A1", 0.125, TYPE_RATE };
+date_variable date = { "B1", 1716881088, TYPE_DATE };
+formula_variable new_rate_variable = { NULL, &new_rate, NULL, NULL, TYPE_RATE };
+formula_variable date_variable = { NULL, NULL, NULL, &date, TYPE_DATE };
+
+formula_variable *vars = malloc(3 * sizeof(formula_variable));
+vars[0] = new_rate_variable;
+vars[1] = date_variable;
+vars[2] = formula_variable_sentinel; // Very important, remember to include it!
+fast_insert_variables(context, vars);
+
+// Can now free the variables created, as their values has been copied.
+free(vars);
+
+/* Now the context contains the following (as json):
+ * 'context': {
+ *     'variables': [
+ *         {
+ *             'type': 2, // = TYPE_RATE
+ *             'number_value': null,
+ *             'rate_value': {
+ *                 'id': "A1",
+ *                 'value': 0.25,
+ *                 'type': 2 // = TYPE_RATE
+ *             },
+ *             'string_value': null,
+ *             'date_value': null
+ *         },
+ *         {
+ *             'type': 3, // = TYPE_STRING
+ *             'number_value': null,
+ *             'rate_value': null,
+ *             'string_value': {
+ *                 'id': "B1",
+ *                 'value': "Another variable",
+ *                 'type': 3 // = TYPE_STRING
+ *             },
+ *             'date_value': null
+ *         },
+ *         {
+ *             'type': 2, // = TYPE_RATE
+ *             'number_value': null,
+ *             'rate_value': {
+ *                 'id': "A1",
+ *                 'value': 0.125,
+ *                 'type': 2 // = TYPE_RATE
+ *             },
+ *             'string_value': null,
+ *             'date_value': null
+ *         },
+ *         {
+ *             'type': 4, // = TYPE_DATE
+ *             'number_value': null,
+ *             'rate_value': null,
+ *             'string_value': null,
+ *             'date_value': {
+ *                 'id': "B1",
+ *                 'value': 1716881088,
+ *                 'type': 4 // = TYPE_DATE
+ *             }
+ *         }
+ *     ]
+ * }
+ *
+ * => The values for A1 & B1 appears twice, as the fast insert skips the existence verification!
+ */
 ```
 
-Here the example used cell-like identification names, but you can basically set whatever you like, as long as it remains alphanumerical and upper-case.
+Here the example used cell-like identification names, but you can basically set whatever you like.
 
+> **NOTE:**  
+> The `formula_variable_sentinel` is nothing but a value identified as the end of the list, when met while looping. That is why it is very important to include it.
+> 
+> For the few curious out there, here's what it contains (basically nothing):
+> ```json
+> 'formula_variable_sentinel': {
+>     'number_value': null,
+>     'rate_value': null,
+>     'string_value': null,
+>     'date_value': null,
+>     'type': 0 // = TYPE_SENTINEL
+> }
+> ```
 
-For the second value, it is very important that you provide a pointer, specifically of void, as the processor will then cast it back as the appropriate type, using the third value.
+The type constants are the following:
+- `TYPE_NUMBER`; meaning it should be interpreted as a number (will be cast as a `double`).
+- `TYPE_RATE`; meaning it should be interpreted as a rate (generally a number between 0 and 1 ; will be cast as a `double`).
+- `TYPE_STRING`; meaning it should be interpreted as a pointer of char (will be cast as a `char *`).
+- `TYPE_DATE`; meaning it should be interpreted as a UNIX timestamp (will be cast as a `long`).
 
-The third value tells what the variable type should be. It should be one of the following: (in case you wondered, the `EFCE_` prefix is there just to avoid conflicts with other constants as much as possible)
-- `EFCE_NUMBER`; meaning it should be interpreted as a number (will be cast as a `double`).
-- `EFCE_RATE`; meaning it should be interpreted as a percentage (will be cast as a `double` and applied a E-2).
-- `EFCE_DATE`; meaning it should be interpreted as a UNIX timestamp (will be cast as a `long`).
-- `EFCE_STRING`; meaning it should be interpreted as a pointer of char (will be cast as a `char *`).
+> **NOTE:**  
+> It is highly recommended to use the functions that create a variable for you:
+> - `insert_new_number_variable(formula_context context, char *id, double value)`;
+> - `insert_new_rate_variable(formula_context context, char *id, double value)`;
+> - `insert_new_string_variable(formula_context context, char *id, char *value)` and
+> - `insert_new_date_variable(formula_context context, char *id, unsigned long value)`.
 
 ### Computation of a formula
 Once your context is ready, you can call the `compute_formula` function to calculate its result with the context you've just set up.
 
 Here's the next part of the first example:
 ```c
-// Still including the `excel_formula_calculation_engine` header.
+// Still including the `efce` header.
 #include <stdio.h>
 
-char *concatenation = (char *)compute_formula(variables, "=A1&\"_\"&B1"); // =A1&"_"&B1
+char *concatenation = (char *)compute_formula(context, "=A1&\"_\"&B1"); // =A1&"_"&B1
 printf(concatenation);
 
 // Output:
