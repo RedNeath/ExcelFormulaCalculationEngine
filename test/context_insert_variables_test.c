@@ -20,15 +20,15 @@ static MunitResult test_insert_variables(const MunitParameter params[], void *da
 
     insert_variables(context, variables);
 
-    munit_assert_int(TYPE_NUMBER, ==, context.variables[0].type);
+    munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10.75, ==, context.variables[0].number_value->value);
 
-    munit_assert_int(TYPE_RATE, ==, context.variables[1].type);
+    munit_assert_ushort(TYPE_RATE, ==, context.variables[1].type);
     munit_assert_float(0.5, ==, context.variables[1].rate_value->value);
 
 
     // Checking for sentinel presence
-    munit_assert_int(TYPE_SENTINEL, ==, context.variables[2].type);
+    munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[2].type);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

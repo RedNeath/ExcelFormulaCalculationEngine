@@ -5,7 +5,7 @@
 
 // Test functions
 #include "context_create_context_test.c"
-#include "context_create_context_with_variables.c"
+#include "context_create_context_with_variables_test.c"
 #include "context_fast_insert_variable_test.c"
 #include "context_fast_insert_variables_test.c"
 #include "context_fast_insert_new_number_variable_test.c"
@@ -19,6 +19,7 @@
 #include "context_insert_new_string_variable_test.c"
 #include "context_insert_new_date_variable_test.c"
 #include "context_get_variable_test.c"
+#include "context_set_capacity_test.c"
 #include "context_overwrite_variable_test.c"
 #include "context_free_context_test.c"
 
@@ -30,13 +31,13 @@ static MunitTest test_array[] = {
     { "/context/fast_insert_variables          \t\t", test_fast_insert_variables, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/fast_insert_new_number_variable\t\t", test_fast_insert_new_number_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/fast_insert_new_rate_variable  \t\t", test_fast_insert_new_rate_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-    { "/context/fast_insert_new_stirng_variable\t\t", test_fast_insert_new_string_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/context/fast_insert_new_string_variable\t\t", test_fast_insert_new_string_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/fast_insert_new_date_variable  \t\t", test_fast_insert_new_date_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/insert_variable                \t\t", test_insert_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/insert_variables               \t\t", test_insert_variables, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/insert_new_number_variable     \t\t", test_insert_new_number_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/insert_new_rate_variable       \t\t", test_insert_new_rate_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-    { "/context/insert_new_stirng_variable     \t\t", test_insert_new_string_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/context/insert_new_string_variable     \t\t", test_insert_new_string_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/insert_new_date_variable       \t\t", test_insert_new_date_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/get_variable                   \t\t", test_get_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/set_capacity                   \t\t", test_set_capacity, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },

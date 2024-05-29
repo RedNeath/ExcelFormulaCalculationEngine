@@ -13,12 +13,12 @@ static MunitResult test_fast_insert_variable(const MunitParameter params[], void
 
     insert_variable(context, variable);
 
-    munit_assert_int(TYPE_NUMBER, ==, context.variables[0].type);
+    munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10.75, ==, context.variables[0].number_value->value);
 
 
     // Checking for sentinel presence
-    munit_assert_int(TYPE_SENTINEL, ==, context.variables[1].type);
+    munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[1].type);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

@@ -28,24 +28,24 @@ static MunitResult test_create_context_with_variables(const MunitParameter param
 
     formula_context context = create_context_with_variables(5, variables);
 
-    munit_assert_int(TYPE_NUMBER, ==, context.variables[0].type);
+    munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10, ==, context.variables[0].number_value->value);
 
-    munit_assert_int(TYPE_RATE, ==, context.variables[1].type);
+    munit_assert_ushort(TYPE_RATE, ==, context.variables[1].type);
     munit_assert_float(0.2, ==, context.variables[1].rate_value->value);
 
-    munit_assert_int(TYPE_STRING, ==, context.variables[2].type);
+    munit_assert_ushort(TYPE_STRING, ==, context.variables[2].type);
     munit_assert_string_equal("string", context.variables[2].string_value->value);
 
-    munit_assert_int(TYPE_DATE, ==, context.variables[3].type);
+    munit_assert_ushort(TYPE_DATE, ==, context.variables[3].type);
     munit_assert_ulong(1716809092, ==, context.variables[3].date_value->value);
 
-    munit_assert_int(TYPE_NUMBER, ==, context.variables[4].type);
+    munit_assert_ushort(TYPE_NUMBER, ==, context.variables[4].type);
     munit_assert_float(12.12, ==, context.variables[4].number_value->value);
 
 
     // Checking for sentinel presence
-    munit_assert_int(TYPE_SENTINEL, ==, context.variables[5].type);
+    munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[5].type);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

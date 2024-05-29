@@ -10,11 +10,13 @@ tests:
 	chmod a+x ./test/exec.sh
 	if [ ! -d ./log ]; then mkdir log; touch ./log/error-report.log; fi
 	docker build -t excel-formula-calculation-engine-tests ./docker/tests
-	docker run -d --rm \
+	-docker stop efce_test
+	-docker rm efce_test
+	docker run -d --name efce_test \
 		-v $(wd):/home/ubuntu/ExcelFormulaCalculationEngine \
 		excel-formula-calculation-engine-tests
 	sleep 2
-	cat ./log/test-report.log
+	cat ./log/test-report.log && echo "\n"
 
 install: all
 	echo "Don't forget to run this command as a superuser!"

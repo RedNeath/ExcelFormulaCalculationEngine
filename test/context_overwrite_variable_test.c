@@ -10,14 +10,18 @@ static MunitResult test_overwrite_variable(const MunitParameter params[], void *
     number_variable n = { "A1", 10.75, TYPE_NUMBER };
     formula_variable old = { &n, NULL, NULL, NULL, TYPE_NUMBER };
 
-    formula_context context = create_context(1);
+    string_variable s = { "A1", "I am a string overwriting an old variable", TYPE_STRING };
+    formula_variable new = { NULL, NULL, &s, NULL, TYPE_STRING };
 
-    insert_new_number_variable(context, "A1", 10.75);
+    overwrite_variable(old, new);
 
-    formula_variable var = get_variable(context, "A1");
-
-    munit_assert_int(TYPE_NUMBER, ==, var.type);
-    munit_assert_float(10.75, ==, var.number_value->value);
+    munit_assert_ushort(TYPE_STRING, ==, old.type);
+    munit_assert_null(old.number_value);
+    munit_assert_null(old.rate_value);
+    munit_assert_null(old.date_value);
+    munit_assert_string_equal("I am a string overwriting an old variable", old.string_value->value);
+    munit_assert_string_equal("A1", old.string_value->id);
+    munit_assert_ushort(TYPE_STRING, ==, old.string_value->type);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

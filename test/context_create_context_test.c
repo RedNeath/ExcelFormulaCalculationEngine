@@ -11,7 +11,7 @@ static MunitResult test_create_context(const MunitParameter params[], void *data
 
     // Logically, the context should have one formula_variable, which is a sentinel
     formula_variable sentinel = context.variables[0];
-    munit_assert_int(TYPE_SENTINEL, ==, sentinel.type);
+    munit_assert_ushort(TYPE_SENTINEL, ==, sentinel.type);
 
     return MUNIT_OK;
 }
