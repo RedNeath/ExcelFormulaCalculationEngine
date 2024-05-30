@@ -102,6 +102,13 @@ extern formula_context create_context_with_variables(unsigned long initial_capac
  * Make sure you use this function only when you are sure that the variable you are trying to insert
  * is not already in the context, otherwise, you will simply not be able to access it anymore.
  *
+ * **VERY IMPORTANT!**
+ * Please, use malloc to allocate the memory to your value variable (the number_variable, rate_variable
+ * string_variable or date_variable within the formula_variable) before calling this function. If
+ * you don't, memory could be lost in the way and cause segmentation problems. On top of that, as you
+ * are supposed to call the free_context() function when you are done with your context and want to
+ * free its memory, it will very likely fail, trying to free the memory of that inner variable.
+ *
  * > **NOTE:**
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
@@ -110,7 +117,9 @@ extern formula_context create_context_with_variables(unsigned long initial_capac
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
- * > all its value. That means that its memory should be freed when freeing the context!
+ * > all its value. That means unless you decide to free the context yourself for whatever reason,
+ * > its memory will be freed when calling free_context(). You SHOULD NOT free its memory on your
+ * > own, or you will face issues when calling the previously mentioned function.
  *
  * @param formula_context context The context in which the variable should be added.
  * @param formula_variable variable The variable to add to the context.
@@ -122,6 +131,13 @@ extern void fast_insert_variable(formula_context *context, formula_variable vari
  * Make sure you use this function only when you are sure that the variables you are trying to insert
  * are not already in the context, otherwise, you will simply not be able to access these anymore.
  *
+ * **VERY IMPORTANT!**
+ * Please, use malloc to allocate the memory to your value variables (the number_variable, rate_variable
+ * string_variable or date_variable within the formula_variable) before calling this function. If
+ * you don't, memory could be lost in the way and cause segmentation problems. On top of that, as you
+ * are supposed to call the free_context() function when you are done with your context and want to
+ * free its memory, it will very likely fail, trying to free the memory of that inner variable.
+ *
  * > **NOTE:**
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
@@ -130,7 +146,9 @@ extern void fast_insert_variable(formula_context *context, formula_variable vari
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
- * > all its value. That means that its memory should be freed when freeing the context!
+ * > all its value. That means unless you decide to free the context yourself for whatever reason,
+ * > its memory will be freed when calling free_context(). You SHOULD NOT free its memory on your
+ * > own, or you will face issues when calling the previously mentioned function.
  *
  * @param formula_context context The context in which the variables should be added.
  * @param formula_variable *variables The list of variables to add to the context.
@@ -230,6 +248,13 @@ extern void fast_insert_new_date_variable(formula_context *context, char *id, un
  * `fast_insert_variable` function instead, which skips the **sequential** existence verification
  * step.
  *
+ * **VERY IMPORTANT!**
+ * Please, use malloc to allocate the memory to your value variable (the number_variable, rate_variable
+ * string_variable or date_variable within the formula_variable) before calling this function. If
+ * you don't, memory could be lost in the way and cause segmentation problems. On top of that, as you
+ * are supposed to call the free_context() function when you are done with your context and want to
+ * free its memory, it will very likely fail, trying to free the memory of that inner variable.
+ *
  * > **NOTE:**
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
@@ -238,7 +263,9 @@ extern void fast_insert_new_date_variable(formula_context *context, char *id, un
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
- * > all its value. That means that its memory should be freed when freeing the context!
+ * > all its value. That means unless you decide to free the context yourself for whatever reason,
+ * > its memory will be freed when calling free_context(). You SHOULD NOT free its memory on your
+ * > own, or you will face issues when calling the previously mentioned function.
  *
  * @param formula_context context The context in which the variable should be added.
  * @param formula_variable variable The variable to add to the context.
@@ -249,6 +276,13 @@ extern void insert_variable(formula_context *context, formula_variable variable)
  * variables are already in the context or not. If one is in the context, then its value will be
  * overwritten.
  *
+ * **VERY IMPORTANT!**
+ * Please, use malloc to allocate the memory to your value variables (the number_variable, rate_variable
+ * string_variable or date_variable within the formula_variable) before calling this function. If
+ * you don't, memory could be lost in the way and cause segmentation problems. On top of that, as you
+ * are supposed to call the free_context() function when you are done with your context and want to
+ * free its memory, it will very likely fail, trying to free the memory of that inner variable.
+ *
  * > **NOTE:**
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
@@ -257,7 +291,9 @@ extern void insert_variable(formula_context *context, formula_variable variable)
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
- * > all its value. That means that its memory should be freed when freeing the context!
+ * > all its value. That means unless you decide to free the context yourself for whatever reason,
+ * > its memory will be freed when calling free_context(). You SHOULD NOT free its memory on your
+ * > own, or you will face issues when calling the previously mentioned function.
  *
  * @param formula_context context The context in which the variables should be added.
  * @param formula_variable *variables The list of variables to add to the context.

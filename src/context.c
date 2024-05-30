@@ -50,29 +50,49 @@ void fast_insert_variables(formula_context *context, formula_variable *variables
 }
 
 void fast_insert_new_number_variable(formula_context *context, char *id, double value) {
-	number_variable number = { id, value, TYPE_NUMBER };
-	formula_variable variable = { &number, NULL, NULL, NULL, TYPE_NUMBER };
+    // Allocating memory otherwise it will be freed at the end of this function
+    number_variable *number = malloc(sizeof(number_variable));
+    number->id = id;
+    number->value = value;
+    number->type = TYPE_NUMBER;
+
+	formula_variable variable = { number, NULL, NULL, NULL, TYPE_NUMBER };
 
 	fast_insert_variable(context, variable);
 }
 
 void fast_insert_new_rate_variable(formula_context *context, char *id, double value) {
-	rate_variable rate = { id, value, TYPE_RATE };
-	formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
+    // Allocating memory otherwise it will be freed at the end of this function
+    rate_variable *rate = malloc(sizeof(rate_variable));
+    rate->id = id;
+    rate->value = value;
+    rate->type = TYPE_RATE;
+
+	formula_variable variable = { NULL, rate, NULL, NULL, TYPE_RATE };
 
 	fast_insert_variable(context, variable);
 }
 
 void fast_insert_new_string_variable(formula_context *context, char *id, char *value) {
-	string_variable str = { id, value, TYPE_STRING }; // Safe variable name (especially for C++ users)
-	formula_variable variable = { NULL, NULL, &str, NULL, TYPE_STRING };
+    // Allocating memory otherwise it will be freed at the end of this function
+    string_variable *str = malloc(sizeof(string_variable)); // Safe variable name (especially for C++ users)
+    str->id = id;
+    str->value = value;
+    str->type = TYPE_STRING;
+
+	formula_variable variable = { NULL, NULL, str, NULL, TYPE_STRING };
 
 	fast_insert_variable(context, variable);
 }
 
 void fast_insert_new_date_variable(formula_context *context, char *id, unsigned long value) {
-	date_variable date = { id, value, TYPE_DATE };
-	formula_variable variable = { NULL, NULL, NULL, &date, TYPE_DATE };
+    // Allocating memory otherwise it will be freed at the end of this function
+    date_variable *date = malloc(sizeof(date_variable));
+    date->id = id;
+    date->value = value;
+    date->type = TYPE_DATE;
+
+	formula_variable variable = { NULL, NULL, NULL, date, TYPE_DATE };
 
 	fast_insert_variable(context, variable);
 }
@@ -120,29 +140,49 @@ void insert_variables(formula_context *context, formula_variable *variables) {
 }
 
 void insert_new_number_variable(formula_context *context, char *id, double value) {
-	number_variable number = { id, value, TYPE_NUMBER };
-	formula_variable variable = { &number, NULL, NULL, NULL, TYPE_NUMBER };
+    // Allocating memory otherwise it will be freed at the end of this function
+    number_variable *number = malloc(sizeof(number_variable));
+    number->id = id;
+    number->value = value;
+    number->type = TYPE_NUMBER;
+
+    formula_variable variable = { number, NULL, NULL, NULL, TYPE_NUMBER };
 
 	insert_variable(context, variable);
 }
 
 void insert_new_rate_variable(formula_context *context, char *id, double value) {
-	rate_variable rate = { id, value, TYPE_RATE };
-	formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
+    // Allocating memory otherwise it will be freed at the end of this function
+    rate_variable *rate = malloc(sizeof(rate_variable));
+    rate->id = id;
+    rate->value = value;
+    rate->type = TYPE_RATE;
+
+    formula_variable variable = { NULL, rate, NULL, NULL, TYPE_RATE };
 
 	insert_variable(context, variable);
 }
 
 void insert_new_string_variable(formula_context *context, char *id, char *value) {
-	string_variable str = { id, value, TYPE_STRING }; // Safe variable name (especially for C++ users)
-	formula_variable variable = { NULL, NULL, &str, NULL, TYPE_STRING };
+    // Allocating memory otherwise it will be freed at the end of this function
+    string_variable *str = malloc(sizeof(string_variable)); // Safe variable name (especially for C++ users)
+    str->id = id;
+    str->value = value;
+    str->type = TYPE_STRING;
+
+    formula_variable variable = { NULL, NULL, str, NULL, TYPE_STRING };
 
 	insert_variable(context, variable);
 }
 
 void insert_new_date_variable(formula_context *context, char *id, unsigned long value) {
-	date_variable date = { id, value, TYPE_DATE };
-	formula_variable variable = { NULL, NULL, NULL, &date, TYPE_DATE };
+    // Allocating memory otherwise it will be freed at the end of this function
+    date_variable *date = malloc(sizeof(date_variable));
+    date->id = id;
+    date->value = value;
+    date->type = TYPE_DATE;
+
+    formula_variable variable = { NULL, NULL, NULL, date, TYPE_DATE };
 
 	insert_variable(context, variable);
 }
@@ -201,6 +241,30 @@ void overwrite_variable(formula_variable *old_variable, formula_variable new_var
 }
 
 void free_context(formula_context *context) {
-	free(context->variables);
+    // Freeing the inner variables before
+    unsigned long i = 0;
+    formula_variable current;
+    while (i < context->count) {
+        current = context->variables[i];
+
+        switch (current.type) {
+            case TYPE_NUMBER:
+                free(current.number_value);
+                break;
+            case TYPE_RATE:
+                free(current.rate_value);
+                break;
+            case TYPE_STRING:
+                free(current.string_value);
+                break;
+            case TYPE_DATE:
+                free(current.date_value);
+                break;
+        }
+
+        i++;
+    }
+
+    free(context->variables);
 	// End of the story for the context 💁‍♂️❤️
 }
