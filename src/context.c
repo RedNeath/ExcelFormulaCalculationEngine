@@ -17,7 +17,7 @@ formula_context create_context(unsigned long initial_capacity) {
 formula_context create_context_with_variables(unsigned long initial_capacity, formula_variable *variables) {
 	formula_context context = create_context(initial_capacity);
 
-	int i;
+	unsigned long i;
 	for (i = 0; i < initial_capacity; i++) {
 		if (variables[i].type == TYPE_SENTINEL) break;
 		context.variables[i] = variables[i];
@@ -42,7 +42,7 @@ void fast_insert_variable(formula_context *context, formula_variable variable) {
 }
 
 void fast_insert_variables(formula_context *context, formula_variable *variables) {
-	int i = 0;
+	unsigned long i = 0;
 	while (variables[i].type != TYPE_SENTINEL) {
 		fast_insert_variable(context, variables[i]);
 		i++;
@@ -98,7 +98,7 @@ void insert_variable(formula_context *context, formula_variable variable) {
 			break;
 
 
-		default: // Something went wrong (silent exception thoug...)
+		default: // Something went wrong (silent exception though...)
 			return;
 	}
 
@@ -112,7 +112,7 @@ void insert_variable(formula_context *context, formula_variable variable) {
 }
 
 void insert_variables(formula_context *context, formula_variable *variables) {
-	int i = 0;
+	unsigned long i = 0;
 	while (variables[i].type != TYPE_SENTINEL) {
 		insert_variable(context, variables[i]);
 		i++;
@@ -152,24 +152,20 @@ formula_variable get_variable(formula_context *context, char *id) {
 	// Simple sequential search, as for now (see the usage tips in the main readme.md file)
 	formula_variable variable;
 
-	for (int i = 0; i < context->count; i++) {
+	for (unsigned long i = 0; i < context->count; i++) {
 		variable = context->variables[i];
 
 		switch (variable.type) {
 			case TYPE_NUMBER:
-		        printf("%s\n", variable.number_value->id);
 				if (strcmp(variable.number_value->id, id) == 0) return variable;
 				break;
 			case TYPE_RATE:
-		        printf("%s\n", variable.rate_value->id);
 				if (strcmp(variable.rate_value->id, id) == 0) return variable;
 				break;
 			case TYPE_STRING:
-		        printf("%s\n", variable.string_value->id);
 				if (strcmp(variable.string_value->id, id) == 0) return variable;
 				break;
 			case TYPE_DATE:
-		        printf("%s\n", variable.date_value->id);
 				if (strcmp(variable.date_value->id, id) == 0) return variable;
 				break;
 
@@ -185,7 +181,7 @@ void set_capacity(formula_context *context, unsigned long new_capacity) {
 	formula_variable *variables = malloc((new_capacity + 1) * sizeof(formula_variable));
 
 	// Transfer the functions to the new array
-	int i = 0;
+	unsigned long i = 0;
 	while (context->variables[i].type != TYPE_SENTINEL && i < new_capacity) { // Second condition in case we reduce
 		variables[i] = context->variables[i];
 		i++;

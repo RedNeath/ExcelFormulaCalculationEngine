@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-#include <stdio.h>
 
 /* types */
 #define TYPE_NUMBER 1
@@ -93,7 +92,7 @@ extern formula_context create_context(unsigned long initial_capacity);
  * in the list you provide than the capacity you specify, the list of variables you give will be
  * cropped to that new size.
  * @param formula_variable *variables The list of variables to add straight to the list.
- * @return formula_context The corredsponding context.
+ * @return formula_context The corresponding context.
  */
 extern formula_context create_context_with_variables(unsigned long initial_capacity, formula_variable *variables);
 
@@ -107,7 +106,7 @@ extern formula_context create_context_with_variables(unsigned long initial_capac
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
@@ -127,7 +126,7 @@ extern void fast_insert_variable(formula_context *context, formula_variable vari
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
@@ -149,12 +148,12 @@ extern void fast_insert_variables(formula_context *context, formula_variable *va
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the number variable shoudl be added.
+ * @param formula_context context The context in which the number variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The numeric value of the variable.
  */
@@ -170,12 +169,12 @@ extern void fast_insert_new_number_variable(formula_context *context, char *id, 
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the rate variable shoudl be added.
+ * @param formula_context context The context in which the rate variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The rate value of the variable.
  */
@@ -191,12 +190,12 @@ extern void fast_insert_new_rate_variable(formula_context *context, char *id, do
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the string variable shoudl be added.
+ * @param formula_context context The context in which the string variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param char *value The string value of the variable.
  */
@@ -212,19 +211,19 @@ extern void fast_insert_new_string_variable(formula_context *context, char *id, 
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the date variable shoudl be added.
+ * @param formula_context context The context in which the date variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param unsigned long value The date value of the variable (as a UNIX epoch).
  */
 extern void fast_insert_new_date_variable(formula_context *context, char *id, unsigned long value);
 
 /**
- * Insert a variable into a given context. This function cheks whether the id of the given variable
+ * Insert a variable into a given context. This function checks whether the id of the given variable
  * is already in the context or not. If it is in the context, then its value will be overwritten.
  *
  * In case you are sure the variable is new in the context, I would advise you to use the
@@ -235,7 +234,7 @@ extern void fast_insert_new_date_variable(formula_context *context, char *id, un
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
@@ -246,7 +245,7 @@ extern void fast_insert_new_date_variable(formula_context *context, char *id, un
  */
 extern void insert_variable(formula_context *context, formula_variable variable);
 /**
- * Insert a bunch of variables into a given context. This function cheks whether the id of the given
+ * Insert a bunch of variables into a given context. This function checks whether the id of the given
  * variables are already in the context or not. If one is in the context, then its value will be
  * overwritten.
  *
@@ -254,7 +253,7 @@ extern void insert_variable(formula_context *context, formula_variable variable)
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > When you insert a formula variable in the context, consider you lose ownership of memory to
@@ -274,12 +273,12 @@ extern void insert_variables(formula_context *context, formula_variable *variabl
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the number variable shoudl be added.
+ * @param formula_context context The context in which the number variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The numeric value of the variable.
  */
@@ -293,12 +292,12 @@ extern void insert_new_number_variable(formula_context *context, char *id, doubl
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the rate variable shoudl be added.
+ * @param formula_context context The context in which the rate variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The rate value of the variable.
  */
@@ -312,12 +311,12 @@ extern void insert_new_rate_variable(formula_context *context, char *id, double 
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the string variable shoudl be added.
+ * @param formula_context context The context in which the string variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param char *value The string value of the variable.
  */
@@ -331,19 +330,19 @@ extern void insert_new_string_variable(formula_context *context, char *id, char 
  * > Adding more variables than the context can contain will result in a reallocation and movement
  * > of the variables in memory, which can be very costful with large amounts of data!
  * >
- * > Please, be careful when chosing your initial capacity!
+ * > Please, be careful when choosing your initial capacity!
  *
  * > **OTHER NOTE:**
  * > This function allocates memory for you, thus, it should be freed when freeing the context!
  *
- * @param formula_context context The context in which the date variable shoudl be added.
+ * @param formula_context context The context in which the date variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param unsigned long value The date value of the variable (as a UNIX epoch).
  */
 extern void insert_new_date_variable(formula_context *context, char *id, unsigned long value);
 
 /**
- * Allows you to retreive a variable from a given id, if it exists in the context.
+ * Allows you to retrieve a variable from a given id, if it exists in the context.
  *
  * @param formula_context context The context in which the variable should be looked for.
  * @param char *id The ID of the variable.
@@ -357,7 +356,7 @@ extern formula_variable get_variable(formula_context *context, char *id);
  *
  * > **NOTE:**
  * > This is the function called when the number of variables in the context exceeds its capacity.
- * > It explains why it is adviced to chose wisely your base capacity!
+ * > It explains why it is advised to chose wisely your base capacity!
  */
 extern void set_capacity(formula_context *context, unsigned long new_capacity);
 
