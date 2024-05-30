@@ -99,10 +99,18 @@ insert_variable(context, variable);
  */
  
 // Using (in a wrong way) the fast insertion
-rate_variable new_rate = { "A1", 0.125, TYPE_RATE };
-date_variable date = { "B1", 1716881088, TYPE_DATE };
-formula_variable new_rate_variable = { NULL, &new_rate, NULL, NULL, TYPE_RATE };
-formula_variable date_variable = { NULL, NULL, NULL, &date, TYPE_DATE };
+rate_variable *new_rate = malloc(sizeof(rate_variable)); // Note that using malloc here is very important (refer to the header's doc to know more)
+new_rate->id = "A1";
+new_rate->value = 0.125;
+new_rate->type = TYPE_RATE;
+
+date_variable *date = malloc(sizeof(date_variable));
+date->id = "B1";
+date->value = 1716881088;
+date->type = TYPE_DATE;
+
+formula_variable new_rate_variable = { NULL, new_rate, NULL, NULL, TYPE_RATE };
+formula_variable date_variable = { NULL, NULL, NULL, date, TYPE_DATE };
 
 formula_variable *vars = malloc(3 * sizeof(formula_variable));
 vars[0] = new_rate_variable;
