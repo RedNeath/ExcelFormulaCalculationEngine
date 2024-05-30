@@ -14,9 +14,9 @@ static MunitResult test_create_context_with_variables(const MunitParameter param
     number_variable n2 = { "A5", 12.12, TYPE_NUMBER };
 
     formula_variable v1 = { &n1, NULL, NULL, NULL, TYPE_NUMBER };
-    formula_variable v2 = { NULL, &r, NULL, NULL, TYPE_NUMBER };
-    formula_variable v3 = { NULL, NULL, &s, NULL, TYPE_NUMBER };
-    formula_variable v4 = { NULL, NULL, NULL, &d, TYPE_NUMBER };
+    formula_variable v2 = { NULL, &r, NULL, NULL, TYPE_RATE };
+    formula_variable v3 = { NULL, NULL, &s, NULL, TYPE_STRING };
+    formula_variable v4 = { NULL, NULL, NULL, &d, TYPE_DATE };
     formula_variable v5 = { &n2, NULL, NULL, NULL, TYPE_NUMBER };
 
     formula_variable *variables = malloc(5 * sizeof(formula_variable));

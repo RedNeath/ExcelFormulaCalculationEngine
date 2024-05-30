@@ -17,8 +17,12 @@ static MunitResult test_fast_insert_variables(const MunitParameter params[], voi
     formula_variable *variables = malloc(5 * sizeof(formula_variable));
     variables[0] = v1;
     variables[1] = v2;
+    variables[2] = formula_variable_sentinel;
 
-    insert_variables(context, variables);
+    fast_insert_variables(&context, variables);
+    free(variables);
+
+    munit_assert_ulong(2, ==, context.count);
 
     munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10.75, ==, context.variables[0].number_value->value);

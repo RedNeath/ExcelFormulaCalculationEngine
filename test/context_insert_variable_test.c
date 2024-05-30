@@ -11,7 +11,7 @@ static MunitResult test_insert_variable(const MunitParameter params[], void *dat
     number_variable n = { "A1", 10.75, TYPE_NUMBER };
     formula_variable variable = { &n, NULL, NULL, NULL, TYPE_NUMBER };
 
-    insert_variable(context, variable);
+    insert_variable(&context, variable);
 
     munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10.75, ==, context.variables[0].number_value->value);

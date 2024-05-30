@@ -9,7 +9,7 @@
 static MunitResult test_fast_insert_new_string_variable(const MunitParameter params[], void *data) {
     formula_context context = create_context(1);
 
-    insert_new_string_variable(context, "A1", "string");
+    fast_insert_new_string_variable(&context, "A1", "string");
 
     munit_assert_ushort(TYPE_STRING, ==, context.variables[0].type);
     munit_assert_string_equal("string", context.variables[0].string_value->value);

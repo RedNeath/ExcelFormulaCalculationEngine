@@ -9,9 +9,9 @@
 static MunitResult test_free_context(const MunitParameter params[], void *data) {
     formula_context context = create_context(1);
 
-    insert_new_number_variable(context, "A1", 10.75);
+    fast_insert_new_number_variable(&context, "A1", 10.75);
 
-    free_context(context);
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

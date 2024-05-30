@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
+#include <stdio.h>
 
 /* types */
 #define TYPE_NUMBER 1
@@ -114,7 +116,7 @@ extern formula_context create_context_with_variables(unsigned long initial_capac
  * @param formula_context context The context in which the variable should be added.
  * @param formula_variable variable The variable to add to the context.
  */
-extern void fast_insert_variable(formula_context context, formula_variable variable);
+extern void fast_insert_variable(formula_context *context, formula_variable variable);
 /**
  * Insert a bunch of variables into a given context, without checking if the values already exists
  * within the context.
@@ -134,7 +136,7 @@ extern void fast_insert_variable(formula_context context, formula_variable varia
  * @param formula_context context The context in which the variables should be added.
  * @param formula_variable *variables The list of variables to add to the context.
  */
-extern void fast_insert_variables(formula_context context, formula_variable *variables);
+extern void fast_insert_variables(formula_context *context, formula_variable *variables);
 
 /**
  * Insert a new number typed variable to the context. This will allocate the memory and create the
@@ -156,7 +158,7 @@ extern void fast_insert_variables(formula_context context, formula_variable *var
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The numeric value of the variable.
  */
-extern void fast_insert_new_number_variable(formula_context context, char *id, double value);
+extern void fast_insert_new_number_variable(formula_context *context, char *id, double value);
 /**
  * Insert a new rate typed variable to the context. This will allocate the memory and create the
  * variable for you. This function doesn't check whether the id given for the variable is already in
@@ -177,7 +179,7 @@ extern void fast_insert_new_number_variable(formula_context context, char *id, d
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The rate value of the variable.
  */
-extern void fast_insert_new_rate_variable(formula_context context, char *id, double value);
+extern void fast_insert_new_rate_variable(formula_context *context, char *id, double value);
 /**
  * Insert a new string typed variable to the context. This will allocate the memory and create the
  * variable for you. This function doesn't check whether the id given for the variable is already in
@@ -198,7 +200,7 @@ extern void fast_insert_new_rate_variable(formula_context context, char *id, dou
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param char *value The string value of the variable.
  */
-extern void fast_insert_new_string_variable(formula_context context, char *id, char *value);
+extern void fast_insert_new_string_variable(formula_context *context, char *id, char *value);
 /**
  * Insert a new date typed variable to the context. This will allocate the memory and create the
  * variable for you. This function doesn't check whether the id given for the variable is already in
@@ -219,7 +221,7 @@ extern void fast_insert_new_string_variable(formula_context context, char *id, c
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param unsigned long value The date value of the variable (as a UNIX epoch).
  */
-extern void fast_insert_new_date_variable(formula_context context, char *id, unsigned long value);
+extern void fast_insert_new_date_variable(formula_context *context, char *id, unsigned long value);
 
 /**
  * Insert a variable into a given context. This function cheks whether the id of the given variable
@@ -242,7 +244,7 @@ extern void fast_insert_new_date_variable(formula_context context, char *id, uns
  * @param formula_context context The context in which the variable should be added.
  * @param formula_variable variable The variable to add to the context.
  */
-extern void insert_variable(formula_context context, formula_variable variable);
+extern void insert_variable(formula_context *context, formula_variable variable);
 /**
  * Insert a bunch of variables into a given context. This function cheks whether the id of the given
  * variables are already in the context or not. If one is in the context, then its value will be
@@ -261,7 +263,7 @@ extern void insert_variable(formula_context context, formula_variable variable);
  * @param formula_context context The context in which the variables should be added.
  * @param formula_variable *variables The list of variables to add to the context.
  */
-extern void insert_variables(formula_context context, formula_variable *variables);
+extern void insert_variables(formula_context *context, formula_variable *variables);
 
 /**
  * Insert a new number typed variable to the context. This will allocate the memory and create the
@@ -281,7 +283,7 @@ extern void insert_variables(formula_context context, formula_variable *variable
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The numeric value of the variable.
  */
-extern void insert_new_number_variable(formula_context context, char *id, double value);
+extern void insert_new_number_variable(formula_context *context, char *id, double value);
 /**
  * Insert a new rate typed variable to the context. This will allocate the memory and create the
  * variable for you. This function also checks whether the id of the given variable is already in
@@ -300,7 +302,7 @@ extern void insert_new_number_variable(formula_context context, char *id, double
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param double value The rate value of the variable.
  */
-extern void insert_new_rate_variable(formula_context context, char *id, double value);
+extern void insert_new_rate_variable(formula_context *context, char *id, double value);
 /**
  * Insert a new string typed variable to the context. This will allocate the memory and create the
  * variable for you. This function also checks whether the id of the given variable is already in
@@ -319,7 +321,7 @@ extern void insert_new_rate_variable(formula_context context, char *id, double v
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param char *value The string value of the variable.
  */
-extern void insert_new_string_variable(formula_context context, char *id, char *value);
+extern void insert_new_string_variable(formula_context *context, char *id, char *value);
 /**
  * Insert a new date typed variable to the context. This will allocate the memory and create the
  * variable for you. This function also checks whether the id of the given variable is already in
@@ -338,7 +340,7 @@ extern void insert_new_string_variable(formula_context context, char *id, char *
  * @param char *id The id of the variable, allowing you to name it in the formula
  * @param unsigned long value The date value of the variable (as a UNIX epoch).
  */
-extern void insert_new_date_variable(formula_context context, char *id, unsigned long value);
+extern void insert_new_date_variable(formula_context *context, char *id, unsigned long value);
 
 /**
  * Allows you to retreive a variable from a given id, if it exists in the context.
@@ -347,7 +349,7 @@ extern void insert_new_date_variable(formula_context context, char *id, unsigned
  * @param char *id The ID of the variable.
  * @return The corresponding formula_variable, or the sentinel if it wasn't found.
  */
-extern formula_variable get_variable(formula_context context, char *id);
+extern formula_variable get_variable(formula_context *context, char *id);
 
 /**
  * Reallocates the memory of the context to change its capacity. As it may sound, this is a rather
@@ -357,7 +359,7 @@ extern formula_variable get_variable(formula_context context, char *id);
  * > This is the function called when the number of variables in the context exceeds its capacity.
  * > It explains why it is adviced to chose wisely your base capacity!
  */
-extern void set_capacity(formula_context context, unsigned long new_capacity);
+extern void set_capacity(formula_context *context, unsigned long new_capacity);
 
 /**
  * This function allows rewriting a new variable over an older one.
@@ -365,7 +367,7 @@ extern void set_capacity(formula_context context, unsigned long new_capacity);
  * @param formula_variable old_variable The variable to be rewritten
  * @param formula_variable new_variable The variable to write onto the older one.
  */
-extern void overwrite_variable(formula_variable old_variable, formula_variable new_variable);
+extern void overwrite_variable(formula_variable *old_variable, formula_variable new_variable);
 
 /**
  * Make a call to that function once you're done with the context you created. This will free the
@@ -373,6 +375,6 @@ extern void overwrite_variable(formula_variable old_variable, formula_variable n
  *
  * @param formula_context context The context to free.
  */
-extern void free_context(formula_context context);
+extern void free_context(formula_context *context);
 
 #endif //CONTEXT_H

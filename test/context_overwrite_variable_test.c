@@ -13,7 +13,7 @@ static MunitResult test_overwrite_variable(const MunitParameter params[], void *
     string_variable s = { "A1", "I am a string overwriting an old variable", TYPE_STRING };
     formula_variable new = { NULL, NULL, &s, NULL, TYPE_STRING };
 
-    overwrite_variable(old, new);
+    overwrite_variable(&old, new);
 
     munit_assert_ushort(TYPE_STRING, ==, old.type);
     munit_assert_null(old.number_value);
