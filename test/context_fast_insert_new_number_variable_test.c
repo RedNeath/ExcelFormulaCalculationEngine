@@ -17,6 +17,7 @@ static MunitResult test_fast_insert_new_number_variable(const MunitParameter par
 
     // Checking for sentinel presence
     munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[1].type);
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

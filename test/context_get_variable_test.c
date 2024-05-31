@@ -16,6 +16,7 @@ static MunitResult test_get_variable(const MunitParameter params[], void *data) 
     munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_ushort(TYPE_NUMBER, ==, var.type);
     munit_assert_float(10.75, ==, var.number_value->value);
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

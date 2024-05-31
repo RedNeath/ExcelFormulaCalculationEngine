@@ -17,6 +17,7 @@ static MunitResult test_insert_new_date_variable(const MunitParameter params[], 
 
     // Checking for sentinel presence
     munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[1].type);
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

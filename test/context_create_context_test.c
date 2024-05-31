@@ -13,6 +13,7 @@ static MunitResult test_create_context(const MunitParameter params[], void *data
     formula_variable sentinel = context.variables[0];
     munit_assert_ushort(TYPE_SENTINEL, ==, sentinel.type);
 
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop

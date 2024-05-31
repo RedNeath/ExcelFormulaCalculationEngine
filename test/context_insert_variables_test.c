@@ -9,11 +9,18 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 static MunitResult test_insert_variables(const MunitParameter params[], void *data) {
     formula_context context = create_context(2);
-    number_variable n = { "A1", 10.75, TYPE_NUMBER };
-    rate_variable r = { "A2", 0.5, TYPE_RATE };
+    number_variable *n = malloc(sizeof(number_variable));
+    n->id = "A1";
+    n->value = 10.75;
+    n->type = TYPE_NUMBER;
 
-    formula_variable v1 = { &n, NULL, NULL, NULL, TYPE_NUMBER };
-    formula_variable v2 = { NULL, &r, NULL, NULL, TYPE_RATE };
+    rate_variable *r = malloc(sizeof(rate_variable));
+    r->id = "A2";
+    r->value = 0.5;
+    r->type = TYPE_RATE;
+
+    formula_variable v1 = { n, NULL, NULL, NULL, TYPE_NUMBER };
+    formula_variable v2 = { NULL, r, NULL, NULL, TYPE_RATE };
     formula_variable *variables = malloc(5 * sizeof(formula_variable));
     variables[0] = v1;
     variables[1] = v2;
@@ -29,6 +36,7 @@ static MunitResult test_insert_variables(const MunitParameter params[], void *da
 
     // Checking for sentinel presence
     munit_assert_ushort(TYPE_SENTINEL, ==, context.variables[2].type);
+    free_context(&context);
     return MUNIT_OK;
 }
 #pragma GCC diagnostic pop
