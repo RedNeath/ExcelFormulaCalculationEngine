@@ -26,7 +26,7 @@ typedef struct formula_token formula_token;
 struct formula_token {
     char *value;
     unsigned short type;
-    formula_token *children;
+    formula_token **children;
 };
 
 static const formula_token leaf_token = { NULL, 0, NULL };
@@ -38,12 +38,14 @@ extern formula_token *parse_negation(formula_context *context, char *input);
 extern formula_token *parse_percent(formula_context *context, char *input);
 extern formula_token *parse_power(formula_context *context, char *input);
 extern formula_token *parse_multiplication_or_division(formula_context *context, char *input);
-extern formula_token *parse_addition_or_substraction(formula_context *context, char *input);
+extern formula_token *parse_addition_or_subtraction(formula_context *context, char *input);
 extern formula_token *parse_concatenation(formula_context *context, char *input);
 extern formula_token *parse_comparison(formula_context *context, char *input);
 extern formula_token *parse_function(formula_context *context, char *input);
 extern formula_token *parse_variable(formula_context *context, char *input);
 extern formula_token *parse_value(formula_context *context, char *input);
 extern formula_token *parse_string(formula_context *context, char *input);
+
+extern void free_token(formula_token *root_token);
 
 #endif //PARSER_H
