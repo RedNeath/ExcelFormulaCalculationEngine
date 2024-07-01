@@ -380,10 +380,10 @@ formula_token *parse_function(formula_context *context, char *input) {
     if (input[first_parenthesis] != '(') return &leaf_token;
 
     char *arguments = malloc((input_length - first_parenthesis - 1) * sizeof(char));
-    memcpy(arguments, input, (input_length - first_parenthesis - 2));
+    memcpy(arguments, (input + first_parenthesis + 1), (input_length - first_parenthesis - 2));
     arguments[input_length - first_parenthesis - 2] = '\0';
     formula_token **children = parse_function_args(context, arguments);
-    if (children[0]->type == TYPE_TOKEN_NONE) return &leaf_token;
+    if (children == NULL) return &leaf_token;
 
     char *name = malloc((first_parenthesis + 1) * sizeof(char));
     memcpy(name, input, first_parenthesis);
@@ -471,4 +471,91 @@ formula_token *parse_boolean(formula_context *context, char *input) {
     token->children = NULL;
 
     return token;
+}
+
+formula_token *parse_number(formula_context *context, char *input) {
+    char *stop;
+    double number;
+
+    number = strtod(input, &stop);
+    if (*stop) return &leaf_token; // If the input hasn't been fully read, then this is not a number
+
+    formula_token *token = malloc(sizeof(formula_token));
+    token->value = input;
+    token->type = TYPE_TOKEN_NUMBER;
+    token->children = NULL;
+
+    return token;
+}
+
+formula_token **parse_function_args(formula_context *context, char *input) {
+    // Note: for the time being, as we do not handle locales yet, the args serparator will be the comma, which is the
+    // default for english languages.
+    formula_token **arguments;
+    unsigned long arg_count;
+    unsigned long arg_length;
+    unsigned long level = 0; // ignore separators when in another function!
+    char *argument;
+    size_t input_size = strlen(input);
+
+    if (input_size == 0) {
+        arguments = malloc(sizeof(formula_token *));
+        arguments[0] = &leaf_token;
+        return arguments; // No arguments
+    }
+
+    // Counting the number of args to allocate the memory
+    arg_count = 1;
+    for (unsigned long i = 0; i < input_size; i++) {
+        // Theoretically, the level shouldn't be capable of going below zero. However, there is no guarantee that we are
+        // really trying to parse the arguments of a function when we get there, so it could well be possible that we
+        // meet a closing parenthesis in our input before we meet an opening one.
+        // In this scenario, the input is undeniably incorrect, so we stop the treatment there.
+        if (input[i] == ')' && level == 0) return NULL;
+        if (input[i] == ',' && level == 0) arg_count++;
+
+        if (input[i] == '(') level++;
+        if (input[i] == ')') level --;
+    }
+    // If our level isn't back down to 0, the input is incorrect
+    if (level > 0) return NULL;
+
+    arguments = malloc((arg_count + 1) * sizeof(formula_token *));
+    for (unsigned long i = 0; i < arg_count; i++) {
+        arg_length = 0;
+
+        while (*input != '\0') {
+            if (*input == '(') level++;
+            if (*input == ')') level--;
+
+            if (*input == ',' && level == 0) break;
+
+            input++;
+            arg_length++;
+        }
+
+        argument = malloc((arg_length + 1) * sizeof(char));
+        memcpy(argument, (input - arg_length), arg_length);
+        argument[arg_length] = '\0';
+
+        // Search down for an expression
+        formula_token *arg_token = parse_expression(context, argument);
+        if (arg_token == NULL) {
+            for (unsigned long j; j < i; j++) free_token(arguments[j]);
+            return NULL;
+        }
+        arguments[i] = arg_token;
+    }
+
+    return arguments;
+}
+
+void free_token(formula_token *root_token) {
+    unsigned long i = 0;
+    while (root_token->children[i]->type != TYPE_TOKEN_NONE) {
+        free_token(root_token->children[i]);
+    }
+
+    free(root_token->value);
+    free(root_token);
 }
