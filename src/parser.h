@@ -44,10 +44,10 @@ extern formula_token *parse_concatenation(formula_context *context, char *input)
 extern formula_token *parse_comparison(formula_context *context, char *input);
 extern formula_token *parse_function(formula_context *context, char *input);
 extern formula_token *parse_variable(formula_context *context, char *input);
-extern formula_token *parse_value(formula_context *context, char *input);
-extern formula_token *parse_string(formula_context *context, char *input);
-extern formula_token *parse_boolean(formula_context *context, char *input);
-extern formula_token *parse_number(formula_context *context, char *input);
+extern formula_token *parse_value(char *input);
+extern formula_token *parse_string(char *input);
+extern formula_token *parse_boolean(char *input);
+extern formula_token *parse_number(char *input);
 extern formula_token **parse_function_args(formula_context *context, char *input);
 
 extern void free_token(formula_token *root_token);

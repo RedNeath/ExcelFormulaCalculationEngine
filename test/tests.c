@@ -22,6 +22,7 @@
 #include "context_set_capacity_test.c"
 #include "context_overwrite_variable_test.c"
 #include "context_free_context_test.c"
+#include "parser_parse_number.c"
 
 // Defining the list of tests to execute:
 static MunitTest test_array[] = {
@@ -43,6 +44,7 @@ static MunitTest test_array[] = {
     { "/context/set_capacity                   \t\t", test_set_capacity, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/overwrite_variable             \t\t", test_overwrite_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/free_context                   \t\t", test_free_context, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_number                    \t\t", test_parse_number, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 
     // Last item must be this one (it is used to identify that this is the end of the list).
     { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }

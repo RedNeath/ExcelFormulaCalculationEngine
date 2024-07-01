@@ -44,7 +44,7 @@ formula_token *parse_expression(formula_context *context, char *input) {
     token = parse_function(context, input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
-    token = parse_value(context, input);
+    token = parse_value(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
     // Variable evaluation last, because this might be the slowest to evaluate (especially if not a variable)
@@ -418,23 +418,23 @@ formula_token *parse_variable(formula_context *context, char *input) {
     return token;
 }
 
-formula_token *parse_value(formula_context *context, char *input) {
+formula_token *parse_value(char *input) {
     formula_token *token;
     if (strlen(input) == 0) return &leaf_token;
 
-    token = parse_string(context, input);
+    token = parse_string(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
-    token = parse_boolean(context, input);
+    token = parse_boolean(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
-    token = parse_number(context, input);
+    token = parse_number(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
     return &leaf_token;
 }
 
-formula_token *parse_string(formula_context *context, char *input) {
+formula_token *parse_string(char *input) {
     size_t input_length = strlen(input);
     if (input_length == 0) return &leaf_token;
     if (*input != '"' || input[input_length - 1] != '"') return &leaf_token;
@@ -460,7 +460,7 @@ formula_token *parse_string(formula_context *context, char *input) {
     return token;
 }
 
-formula_token *parse_boolean(formula_context *context, char *input) {
+formula_token *parse_boolean(char *input) {
     int isTrue = strcmp(input, "TRUE") == 0;
     int isFalse = strcmp(input, "FALSE") == 0;
     if (!isTrue && !isFalse) return &leaf_token;
@@ -473,15 +473,21 @@ formula_token *parse_boolean(formula_context *context, char *input) {
     return token;
 }
 
-formula_token *parse_number(formula_context *context, char *input) {
+formula_token *parse_number(char *input) {
+    size_t input_length = strlen(input);
     char *stop;
     double number;
+    char *number_copy;
 
     number = strtod(input, &stop);
     if (*stop) return &leaf_token; // If the input hasn't been fully read, then this is not a number
 
+    number_copy = malloc((input_length + 1) * sizeof(char));
+    memcpy(number_copy, input, input_length);
+    number_copy[input_length] = '\0';
+
     formula_token *token = malloc(sizeof(formula_token));
-    token->value = input;
+    token->value = number_copy;
     token->type = TYPE_TOKEN_NUMBER;
     token->children = NULL;
 
@@ -489,23 +495,16 @@ formula_token *parse_number(formula_context *context, char *input) {
 }
 
 formula_token **parse_function_args(formula_context *context, char *input) {
-    // Note: for the time being, as we do not handle locales yet, the args serparator will be the comma, which is the
+    // Note: for the time being, as we do not handle locales yet, the args separator will be the comma, which is the
     // default for english languages.
     formula_token **arguments;
-    unsigned long arg_count;
+    size_t input_size = strlen(input);
+    unsigned long arg_count = input_size == 0? 0: 1;
     unsigned long arg_length;
     unsigned long level = 0; // ignore separators when in another function!
     char *argument;
-    size_t input_size = strlen(input);
-
-    if (input_size == 0) {
-        arguments = malloc(sizeof(formula_token *));
-        arguments[0] = &leaf_token;
-        return arguments; // No arguments
-    }
 
     // Counting the number of args to allocate the memory
-    arg_count = 1;
     for (unsigned long i = 0; i < input_size; i++) {
         // Theoretically, the level shouldn't be capable of going below zero. However, there is no guarantee that we are
         // really trying to parse the arguments of a function when we get there, so it could well be possible that we
@@ -521,6 +520,11 @@ formula_token **parse_function_args(formula_context *context, char *input) {
     if (level > 0) return NULL;
 
     arguments = malloc((arg_count + 1) * sizeof(formula_token *));
+    if (input_size == 0) {
+        arguments[0] = &leaf_token;
+        return arguments; // No arguments
+    }
+
     for (unsigned long i = 0; i < arg_count; i++) {
         arg_length = 0;
 
