@@ -470,12 +470,18 @@ formula_token *parse_string(char *input) {
 }
 
 formula_token *parse_boolean(char *input) {
+    char *boolean_copy;
+    size_t input_length = strlen(input);
     int isTrue = strcmp(input, "TRUE") == 0;
     int isFalse = strcmp(input, "FALSE") == 0;
     if (!isTrue && !isFalse) return leaf_token();
 
+    boolean_copy = malloc((input_length + 1) * sizeof(char));
+    memcpy(boolean_copy, input, input_length);
+    boolean_copy[input_length] = '\0';
+
     formula_token *token = malloc(sizeof(formula_token));
-    token->value = isTrue? "TRUE": "FALSE";
+    token->value = boolean_copy;
     token->type = TYPE_TOKEN_BOOLEAN;
     token->children = NULL;
 
@@ -567,6 +573,7 @@ void free_token(formula_token *root_token) {
     if (root_token->children != NULL) {
         while (root_token->children[i]->type != TYPE_TOKEN_NONE) {
             free_token(root_token->children[i]);
+            i++;
         }
         free_token(root_token->children[i]);
     }
