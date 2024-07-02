@@ -450,11 +450,11 @@ formula_token *parse_string(char *input) {
 
     input++;
 
-    for (unsigned long i; i < input_length - 2; i++) {
+    for (unsigned long i = 0; i < input_length - 2; i++) {
         if (input[i] == '"' && (input[i + 1] != '"' || i + 1 >= input_length - 2)) return leaf_token();
 
         // Handling escaped double quotes:
-        else if (input[i] == '"' && input[i + 1] == '"') i++; // Jumping next iteration
+        else if (input[i] == '"' && (input[i + 1] == '"' && i + 1 < input_length - 2)) i++; // Jumping next iteration
     }
 
     char *value = malloc((input_length - 1) * sizeof(char));
