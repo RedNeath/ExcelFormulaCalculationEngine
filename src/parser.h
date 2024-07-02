@@ -30,8 +30,7 @@ struct formula_token {
     formula_token **children;
 };
 
-static const formula_token leaf_token = { NULL, 0, NULL };
-
+extern formula_token *leaf_token();
 extern formula_token *parse_formula(formula_context *context, char *input);
 extern formula_token *parse_expression(formula_context *context, char *input);
 extern formula_token *parse_parenthesis(formula_context *context, char *input);

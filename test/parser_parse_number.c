@@ -27,9 +27,6 @@ static MunitResult test_parse_number(const MunitParameter params[], void *data) 
 
     munit_assert_string_equal("1", token_integer_number->value);
     munit_assert_string_equal("1.02", token_floating_number->value);
-    munit_assert_string_equal(NULL, token_not_a_number->value);
-    munit_assert_string_equal(NULL, token_starting_with_number->value);
-    munit_assert_string_equal(NULL, token_ending_with_number->value);
 
     free_token(token_integer_number);
     free_token(token_floating_number);

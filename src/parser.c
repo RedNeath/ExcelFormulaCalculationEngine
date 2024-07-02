@@ -4,6 +4,15 @@
 
 #include "parser.h"
 
+formula_token *leaf_token() {
+    formula_token *token = malloc(sizeof(formula_token));
+    token->value = NULL;
+    token->type = TYPE_TOKEN_NONE;
+    token->children = NULL;
+
+    return token;
+}
+
 formula_token *parse_formula(formula_context *context, char *input) {
 	if (*input != '=') {
 		return NULL;
@@ -56,8 +65,8 @@ formula_token *parse_expression(formula_context *context, char *input) {
 
 formula_token *parse_parenthesis(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
-    if (*input != '(' || input[input_length - 1] != ')') return &leaf_token;
+    if (input_length == 0) return leaf_token();
+    if (*input != '(' || input[input_length - 1] != ')') return leaf_token();
 
     input++;
 
@@ -70,8 +79,8 @@ formula_token *parse_parenthesis(formula_context *context, char *input) {
 
 formula_token *parse_negation(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
-    if (*input != '-') return &leaf_token;
+    if (input_length == 0) return leaf_token();
+    if (*input != '-') return leaf_token();
 
     input++;
     formula_token *token = malloc(sizeof(formula_token));
@@ -85,8 +94,8 @@ formula_token *parse_negation(formula_context *context, char *input) {
 
 formula_token *parse_percent(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
-    if (input[input_length - 1] != '%') return &leaf_token;
+    if (input_length == 0) return leaf_token();
+    if (input[input_length - 1] != '%') return leaf_token();
 
     char *expression = malloc((input_length) * sizeof(char));
     memcpy(expression, input, input_length - 1);
@@ -102,7 +111,7 @@ formula_token *parse_percent(formula_context *context, char *input) {
 
 formula_token *parse_power(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     for (unsigned long i = input_length - 1; i > 0; i--) {
         // Note: i > 0 is not a mistake!
@@ -142,12 +151,12 @@ formula_token *parse_power(formula_context *context, char *input) {
         return token;
     }
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_multiplication_or_division(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     for (unsigned long i = input_length - 1; i > 0; i--) {
         // Note: i > 0 is not a mistake!
@@ -187,12 +196,12 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
         return token;
     }
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_addition_or_subtraction(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     for (unsigned long i = input_length - 1; i > 0; i--) {
         // Note: i > 0 is not a mistake!
@@ -232,12 +241,12 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
         return token;
     }
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_concatenation(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     for (unsigned long i = input_length - 1; i > 0; i--) {
         // Note: i > 0 is not a mistake!
@@ -277,12 +286,12 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
         return token;
     }
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_comparison(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     // Needs optimisation!!
     for (unsigned long i = input_length - 1; i > 1; i--) {
@@ -364,26 +373,26 @@ formula_token *parse_comparison(formula_context *context, char *input) {
         return token;
     }
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_function(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
-    if (input[input_length - 1] != ')') return &leaf_token;
+    if (input_length == 0) return leaf_token();
+    if (input[input_length - 1] != ')') return leaf_token();
 
     // Getting the function's name
     unsigned long first_parenthesis = 1; // Name length must be at least 1!
     for (; first_parenthesis < (input_length - 1); first_parenthesis++) {
         if (input[first_parenthesis] == '(') break;
     }
-    if (input[first_parenthesis] != '(') return &leaf_token;
+    if (input[first_parenthesis] != '(') return leaf_token();
 
     char *arguments = malloc((input_length - first_parenthesis - 1) * sizeof(char));
     memcpy(arguments, (input + first_parenthesis + 1), (input_length - first_parenthesis - 2));
     arguments[input_length - first_parenthesis - 2] = '\0';
     formula_token **children = parse_function_args(context, arguments);
-    if (children == NULL) return &leaf_token;
+    if (children == NULL) return leaf_token();
 
     char *name = malloc((first_parenthesis + 1) * sizeof(char));
     memcpy(name, input, first_parenthesis);
@@ -399,12 +408,12 @@ formula_token *parse_function(formula_context *context, char *input) {
 
 formula_token *parse_variable(formula_context *context, char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
+    if (input_length == 0) return leaf_token();
 
     // I don't like that, highly inefficient when there are lots of variables, plus we will have to try to find it
     // once again later on...
     formula_variable variable = get_variable(context, input);
-    if (variable.type == TYPE_SENTINEL) return &leaf_token;
+    if (variable.type == TYPE_SENTINEL) return leaf_token();
 
     char *name = malloc((input_length) * sizeof(char));
     memcpy(name, input, input_length - 1);
@@ -420,7 +429,7 @@ formula_token *parse_variable(formula_context *context, char *input) {
 
 formula_token *parse_value(char *input) {
     formula_token *token;
-    if (strlen(input) == 0) return &leaf_token;
+    if (strlen(input) == 0) return leaf_token();
 
     token = parse_string(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
@@ -431,18 +440,18 @@ formula_token *parse_value(char *input) {
     token = parse_number(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
-    return &leaf_token;
+    return leaf_token();
 }
 
 formula_token *parse_string(char *input) {
     size_t input_length = strlen(input);
-    if (input_length == 0) return &leaf_token;
-    if (*input != '"' || input[input_length - 1] != '"') return &leaf_token;
+    if (input_length == 0) return leaf_token();
+    if (*input != '"' || input[input_length - 1] != '"') return leaf_token();
 
     input++;
 
     for (unsigned long i; i < input_length - 2; i++) {
-        if (input[i] == '"' && (input[i + 1] != '"' || i + 1 >= input_length - 2)) return &leaf_token;
+        if (input[i] == '"' && (input[i + 1] != '"' || i + 1 >= input_length - 2)) return leaf_token();
 
         // Handling escaped double quotes:
         else if (input[i] == '"' && input[i + 1] == '"') i++; // Jumping next iteration
@@ -463,7 +472,7 @@ formula_token *parse_string(char *input) {
 formula_token *parse_boolean(char *input) {
     int isTrue = strcmp(input, "TRUE") == 0;
     int isFalse = strcmp(input, "FALSE") == 0;
-    if (!isTrue && !isFalse) return &leaf_token;
+    if (!isTrue && !isFalse) return leaf_token();
 
     formula_token *token = malloc(sizeof(formula_token));
     token->value = isTrue? "TRUE": "FALSE";
@@ -476,11 +485,10 @@ formula_token *parse_boolean(char *input) {
 formula_token *parse_number(char *input) {
     size_t input_length = strlen(input);
     char *stop;
-    double number;
     char *number_copy;
 
-    number = strtod(input, &stop);
-    if (*stop) return &leaf_token; // If the input hasn't been fully read, then this is not a number
+    strtod(input, &stop);
+    if (*stop) return leaf_token(); // If the input hasn't been fully read, then this is not a number
 
     number_copy = malloc((input_length + 1) * sizeof(char));
     memcpy(number_copy, input, input_length);
@@ -521,7 +529,7 @@ formula_token **parse_function_args(formula_context *context, char *input) {
 
     arguments = malloc((arg_count + 1) * sizeof(formula_token *));
     if (input_size == 0) {
-        arguments[0] = &leaf_token;
+        arguments[0] = leaf_token();
         return arguments; // No arguments
     }
 
@@ -556,7 +564,10 @@ formula_token **parse_function_args(formula_context *context, char *input) {
 
 void free_token(formula_token *root_token) {
     unsigned long i = 0;
-    while (root_token->children[i]->type != TYPE_TOKEN_NONE) {
+    if (root_token->children != NULL) {
+        while (root_token->children[i]->type != TYPE_TOKEN_NONE) {
+            free_token(root_token->children[i]);
+        }
         free_token(root_token->children[i]);
     }
 
