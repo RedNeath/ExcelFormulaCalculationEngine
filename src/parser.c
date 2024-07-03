@@ -415,9 +415,9 @@ formula_token *parse_variable(formula_context *context, char *input) {
     formula_variable variable = get_variable(context, input);
     if (variable.type == TYPE_SENTINEL) return leaf_token();
 
-    char *name = malloc((input_length) * sizeof(char));
-    memcpy(name, input, input_length - 1);
-    name[input_length - 1] = '\0';
+    char *name = malloc((input_length + 1) * sizeof(char));
+    memcpy(name, input, input_length);
+    name[input_length] = '\0';
 
     formula_token *token = malloc(sizeof(formula_token));
     token->type = TYPE_TOKEN_VARIABLE;

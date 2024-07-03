@@ -26,6 +26,7 @@
 #include "parser_parse_boolean.c"
 #include "parser_parse_string.c"
 #include "parser_parse_value.c"
+#include "parser_parse_variable.c"
 
 // Defining the list of tests to execute:
 static MunitTest test_array[] = {
@@ -51,6 +52,7 @@ static MunitTest test_array[] = {
     { "/parser/parse_boolean                   \t\t", test_parse_boolean, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/parser/parse_string                    \t\t", test_parse_string, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/parser/parse_value                     \t\t", test_parse_value, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_variable                  \t\t", test_parse_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 
     // Last item must be this one (it is used to identify that this is the end of the list).
     { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
