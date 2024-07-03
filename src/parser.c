@@ -433,12 +433,15 @@ formula_token *parse_value(char *input) {
 
     token = parse_string(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
+    else free_token(token);
 
     token = parse_boolean(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
+    else free_token(token);
 
     token = parse_number(input);
     if (token->type != TYPE_TOKEN_NONE) return token;
+    else free_token(token);
 
     return leaf_token();
 }
