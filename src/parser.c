@@ -47,8 +47,8 @@ formula_token *parse_expression(formula_context *context, char *input) {
     token = parse_negation(context, input);
     if (token->type != TYPE_TOKEN_NONE) return token;
 
-    token = parse_parenthesis(context, input);
-    if (token->type != TYPE_TOKEN_NONE) return token;
+    token = parse_parenthesis(context, input); // WARNING: may return NULL !
+    if (token == NULL || token->type != TYPE_TOKEN_NONE) return token;
 
     token = parse_function(context, input);
     if (token->type != TYPE_TOKEN_NONE) return token;
@@ -74,25 +74,33 @@ formula_token *parse_parenthesis(formula_context *context, char *input) {
     memcpy(expression, input, input_length - 2);
     expression[input_length - 2] = '\0';
 
-    return parse_expression(context, input);
+    return parse_expression(context, expression);
 }
 
 formula_token *parse_negation(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
     if (*input != '-') return leaf_token();
 
     input++;
+    formula_token *child = parse_expression(context, input);
+    if (child == NULL || child->type == TYPE_TOKEN_NONE) return leaf_token();
+
     formula_token *token = malloc(sizeof(formula_token));
-    token->value = "-";
+    token_value = malloc(2 * sizeof(char));
+    memcpy(token_value, "-\0", 2);
+
+    token->value = token_value;
     token->type = TYPE_TOKEN_UNARY_OPERATOR;
     token->children = malloc(sizeof(formula_token *));
-    token->children[0] = parse_expression(context, input);
+    token->children[0] = child;
 
     return token;
 }
 
 formula_token *parse_percent(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
     if (input[input_length - 1] != '%') return leaf_token();
@@ -100,16 +108,23 @@ formula_token *parse_percent(formula_context *context, char *input) {
     char *expression = malloc((input_length) * sizeof(char));
     memcpy(expression, input, input_length - 1);
     expression[input_length - 1] = '\0';
+    formula_token *child = parse_expression(context, expression);
+    if (child == NULL || child->type == TYPE_TOKEN_NONE) return leaf_token();
+
     formula_token *token = malloc(sizeof(formula_token));
-    token->value = "%";
+    token_value = malloc(2 * sizeof(char));
+    memcpy(token_value, "%\0", 2);
+
+    token->value = token_value;
     token->type = TYPE_TOKEN_UNARY_OPERATOR;
     token->children = malloc(sizeof(formula_token *));
-    token->children[0] = parse_expression(context, input);
+    token->children[0] = child;
 
     return token;
 }
 
 formula_token *parse_power(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
 
@@ -122,7 +137,7 @@ formula_token *parse_power(formula_context *context, char *input) {
         memcpy(left, input, i);
         left[i] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -133,7 +148,7 @@ formula_token *parse_power(formula_context *context, char *input) {
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -142,7 +157,10 @@ formula_token *parse_power(formula_context *context, char *input) {
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = "^";
+        token_value = malloc(2 * sizeof(char));
+        memcpy(token_value, "^\0", 2);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -155,6 +173,7 @@ formula_token *parse_power(formula_context *context, char *input) {
 }
 
 formula_token *parse_multiplication_or_division(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
 
@@ -167,7 +186,7 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
         memcpy(left, input, i);
         left[i] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -178,7 +197,7 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -187,7 +206,11 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = input[i] == '*'? "*": "/";
+        token_value = malloc(2 * sizeof(char));
+        if (input[i] == '*') memcpy(token_value, "*\0", 2);
+        else memcpy(token_value, "/\0", 2);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -200,6 +223,7 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
 }
 
 formula_token *parse_addition_or_subtraction(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
 
@@ -212,7 +236,7 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
         memcpy(left, input, i);
         left[i] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -223,7 +247,7 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -232,7 +256,11 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = input[i] == '+'? "+": "-";
+        token_value = malloc(2 * sizeof(char));
+        if (input[i] == '+') memcpy(token_value, "+\0", 2);
+        else memcpy(token_value, "-\0", 2);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -245,6 +273,7 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
 }
 
 formula_token *parse_concatenation(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
 
@@ -257,7 +286,7 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
         memcpy(left, input, i);
         left[i] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -268,7 +297,7 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -277,7 +306,10 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = "&";
+        token_value = malloc(2 * sizeof(char));
+        memcpy(token_value, "&\0", 2);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -290,6 +322,7 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
 }
 
 formula_token *parse_comparison(formula_context *context, char *input) {
+    char *token_value;
     size_t input_length = strlen(input);
     if (input_length == 0) return leaf_token();
 
@@ -305,7 +338,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
         memcpy(left, input, i - 1);
         left[i - 1] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -316,7 +349,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -325,8 +358,12 @@ formula_token *parse_comparison(formula_context *context, char *input) {
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = input[i] == '>'? "<>":
-            input[i - 1] == '>'? ">=": "<=";
+        token_value = malloc(3 * sizeof(char));
+        if (input[i] == '>') memcpy(token_value, "<>\0", 3);
+        else if (input[i - 1] == '>') memcpy(token_value, ">=\0", 3);
+        else memcpy(token_value, "<=\0", 3);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -344,7 +381,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
         memcpy(left, input, i);
         left[i] = '\0';
         formula_token *left_token = parse_expression(context, left);
-        if (left_token->type == TYPE_TOKEN_NONE) {
+        if (left_token == NULL || left_token->type == TYPE_TOKEN_NONE) {
             free(left);
             continue;
         }
@@ -355,7 +392,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
         memcpy(right, input + i + 1, input_length - i - 1);
         right[input_length - i - 1] = '\0';
         formula_token *right_token = parse_expression(context, right);
-        if (right_token->type == TYPE_TOKEN_NONE) {
+        if (right_token == NULL || right_token->type == TYPE_TOKEN_NONE) {
             free(right);
             free_token(left_token); // Must free OK left token!
             continue;
@@ -364,7 +401,12 @@ formula_token *parse_comparison(formula_context *context, char *input) {
 
         // Both sides are valid, can create and return the actual token
         formula_token *token = malloc(sizeof(formula_token));
-        token->value = input[i] == '+'? "+": "-";
+        token_value = malloc(2 *sizeof(char));
+        if (input[i] == '>') memcpy(token_value, ">\0", 2);
+        else if (input[i] == '<') memcpy(token_value, "<\0", 2);
+        else memcpy(token_value, "=\0", 2);
+
+        token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
         token->children = malloc(sizeof(formula_token *));
         token->children[0] = left_token;
@@ -573,14 +615,14 @@ formula_token **parse_function_args(formula_context *context, char *input) {
 
 void free_token(formula_token *root_token) {
     unsigned long i = 0;
-    if (root_token->children != NULL) {
-        while (root_token->children[i]->type != TYPE_TOKEN_NONE) {
+    if (root_token != NULL && root_token->children != NULL) {
+        while (root_token->children[i] != NULL && root_token->children[i]->type != TYPE_TOKEN_NONE) {
             free_token(root_token->children[i]);
             i++;
         }
         free_token(root_token->children[i]);
     }
 
-    free(root_token->value);
+    if (root_token != NULL) free(root_token->value);
     free(root_token);
 }
