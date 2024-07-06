@@ -608,8 +608,10 @@ formula_token **parse_function_args(formula_context *context, char *input) {
             return NULL;
         }
         arguments[i] = arg_token;
+        input++;
     }
 
+    arguments[arg_count] = leaf_token();
     return arguments;
 }
 
