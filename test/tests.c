@@ -38,6 +38,7 @@
 #include "parser_parse_parenthesis.c"
 #include "parser_parse_expression.c"
 #include "parser_parse_function_args.c"
+#include "parser_parse_formula.c"
 
 // Defining the list of tests to execute:
 static MunitTest test_array[] = {
@@ -75,6 +76,7 @@ static MunitTest test_array[] = {
     { "/parser/parse_parenthesis               \t\t", test_parse_parenthesis, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/parser/parse_expression                \t\t", test_parse_expression, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/parser/parse_function_args             \t\t", test_parse_function_args, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_formula                   \t\t", test_parse_formula, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 
     // Last item must be this one (it is used to identify that this is the end of the list).
     { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
