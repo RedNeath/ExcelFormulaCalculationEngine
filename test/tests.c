@@ -22,6 +22,23 @@
 #include "context_set_capacity_test.c"
 #include "context_overwrite_variable_test.c"
 #include "context_free_context_test.c"
+#include "parser_parse_number.c"
+#include "parser_parse_boolean.c"
+#include "parser_parse_string.c"
+#include "parser_parse_value.c"
+#include "parser_parse_variable.c"
+#include "parser_parse_function.c"
+#include "parser_parse_comparison.c"
+#include "parser_parse_concatenation.c"
+#include "parser_parse_addition_or_subtraction.c"
+#include "parser_parse_multiplication_or_division.c"
+#include "parser_parse_power.c"
+#include "parser_parse_percent.c"
+#include "parser_parse_negation.c"
+#include "parser_parse_parenthesis.c"
+#include "parser_parse_expression.c"
+#include "parser_parse_function_args.c"
+#include "parser_parse_formula.c"
 
 // Defining the list of tests to execute:
 static MunitTest test_array[] = {
@@ -43,6 +60,23 @@ static MunitTest test_array[] = {
     { "/context/set_capacity                   \t\t", test_set_capacity, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/overwrite_variable             \t\t", test_overwrite_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
     { "/context/free_context                   \t\t", test_free_context, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_number                    \t\t", test_parse_number, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_boolean                   \t\t", test_parse_boolean, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_string                    \t\t", test_parse_string, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_value                     \t\t", test_parse_value, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_variable                  \t\t", test_parse_variable, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_function                  \t\t", test_parse_function, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_comparison                \t\t", test_parse_comparison, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_concatenation             \t\t", test_parse_concatenation, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_addition_or_subtraction   \t\t", test_parse_addition_or_subtraction, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_multiplication_or_division\t\t", test_parse_multiplication_or_division, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_power                     \t\t", test_parse_power, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_percent                   \t\t", test_parse_percent, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_negation                  \t\t", test_parse_negation, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_parenthesis               \t\t", test_parse_parenthesis, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_expression                \t\t", test_parse_expression, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_function_args             \t\t", test_parse_function_args, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/parser/parse_formula                   \t\t", test_parse_formula, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 
     // Last item must be this one (it is used to identify that this is the end of the list).
     { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
