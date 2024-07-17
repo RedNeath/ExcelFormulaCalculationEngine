@@ -14,9 +14,9 @@ I'll detail here the way it is intended to work.
       - [2. Injecting variable values](#2-injecting-variable-values)
       - [3. Creating the execution tree](#3-creating-the-execution-tree)
     - [Formula processing](#formula-processing)
+- [Usage tips!](#usage-tips)
 - [Building the project](#building-the-project)
   - [Project dependencies](#project-dependencies)
-- [Usage tips!](#usage-tips)
 
 ## A three steps workflow
 
@@ -45,14 +45,14 @@ insert_new_string_variable(context, "B1", "Another variable");
  *                 'value': 1,
  *                 'type': 1 // = TYPE_NUMBER
  *             },
- *             'rate_value': null,
+ *             'boolean_value': null,
  *             'string_value': null,
  *             'date_value': null
  *         },
  *         {
  *             'type': 3, // = TYPE_STRING
  *             'number_value': null,
- *             'rate_value': null,
+ *             'boolean_value': null,
  *             'string_value': {
  *                 'id': "B1",
  *                 'value': "Another variable",
@@ -65,20 +65,20 @@ insert_new_string_variable(context, "B1", "Another variable");
  */
  
 // Adding a self-prepared variable, and overwriting an existing one
-rate_variable rate = { "A1", 0.25, TYPE_RATE };
-formula_variable variable = { NULL, &rate, NULL, NULL, TYPE_RATE };
+boolean_variable boolean = { "A1", true, TYPE_BOOLEAN }; // Use 0 or 1 if you don't want to include stdbool.h
+formula_variable variable = { NULL, &boolean, NULL, NULL, TYPE_BOOLEAN };
 insert_variable(context, variable);
 
 /* Now the context contains the following (as json):
  * 'context': {
  *     'variables': [
  *         {
- *             'type': 2, // = TYPE_RATE
+ *             'type': 2, // = TYPE_BOOLEAN
  *             'number_value': null,
- *             'rate_value': {
+ *             'boolean_value': {
  *                 'id': "A1",
- *                 'value': 0.25,
- *                 'type': 2 // = TYPE_RATE
+ *                 'value': true,
+ *                 'type': 2 // = TYPE_BOOLEAN
  *             },
  *             'string_value': null,
  *             'date_value': null
@@ -86,7 +86,7 @@ insert_variable(context, variable);
  *         {
  *             'type': 3, // = TYPE_STRING
  *             'number_value': null,
- *             'rate_value': null,
+ *             'boolean_value': null,
  *             'string_value': {
  *                 'id': "B1",
  *                 'value': "Another variable",
@@ -99,21 +99,21 @@ insert_variable(context, variable);
  */
  
 // Using (in a wrong way) the fast insertion
-rate_variable *new_rate = malloc(sizeof(rate_variable)); // Note that using malloc here is very important (refer to the header's doc to know more)
-new_rate->id = "A1";
-new_rate->value = 0.125;
-new_rate->type = TYPE_RATE;
+boolean_variable *new_boolean = malloc(sizeof(boolean_variable)); // Note that using malloc here is very important (refer to the header's doc to know more)
+new_boolean->id = "A1";
+new_boolean->value = false;
+new_boolean->type = TYPE_BOOLEAN;
 
 date_variable *date = malloc(sizeof(date_variable));
 date->id = "B1";
 date->value = 1716881088;
 date->type = TYPE_DATE;
 
-formula_variable new_rate_variable = { NULL, new_rate, NULL, NULL, TYPE_RATE };
+formula_variable new_boolean_variable = { NULL, new_boolean, NULL, NULL, TYPE_BOOLEAN };
 formula_variable date_variable = { NULL, NULL, NULL, date, TYPE_DATE };
 
 formula_variable *vars = malloc(3 * sizeof(formula_variable));
-vars[0] = new_rate_variable;
+vars[0] = new_boolean_variable;
 vars[1] = date_variable;
 vars[2] = formula_variable_sentinel; // Very important, remember to include it!
 fast_insert_variables(context, vars);
@@ -125,12 +125,12 @@ free(vars);
  * 'context': {
  *     'variables': [
  *         {
- *             'type': 2, // = TYPE_RATE
+ *             'type': 2, // = TYPE_BOOLEAN
  *             'number_value': null,
- *             'rate_value': {
+ *             'boolean_value': {
  *                 'id': "A1",
- *                 'value': 0.25,
- *                 'type': 2 // = TYPE_RATE
+ *                 'value': true,
+ *                 'type': 2 // = TYPE_BOOLEAN
  *             },
  *             'string_value': null,
  *             'date_value': null
@@ -138,7 +138,7 @@ free(vars);
  *         {
  *             'type': 3, // = TYPE_STRING
  *             'number_value': null,
- *             'rate_value': null,
+ *             'boolean_value': null,
  *             'string_value': {
  *                 'id': "B1",
  *                 'value': "Another variable",
@@ -147,12 +147,12 @@ free(vars);
  *             'date_value': null
  *         },
  *         {
- *             'type': 2, // = TYPE_RATE
+ *             'type': 2, // = TYPE_BOOLEAN
  *             'number_value': null,
- *             'rate_value': {
+ *             'boolean_value': {
  *                 'id': "A1",
- *                 'value': 0.125,
- *                 'type': 2 // = TYPE_RATE
+ *                 'value': false,
+ *                 'type': 2 // = TYPE_BOOLEAN
  *             },
  *             'string_value': null,
  *             'date_value': null
@@ -160,7 +160,7 @@ free(vars);
  *         {
  *             'type': 4, // = TYPE_DATE
  *             'number_value': null,
- *             'rate_value': null,
+ *             'boolean_value': null,
  *             'string_value': null,
  *             'date_value': {
  *                 'id': "B1",
@@ -185,7 +185,7 @@ Here the example used cell-like identification names, but you can basically set 
 > {
 >     "formula_variable_sentinel": {
 >         "number_value": null,
->         "rate_value": null,
+>         "boolean_value": null,
 >         "string_value": null,
 >         "date_value": null,
 >         "type": 0 // = TYPE_SENTINEL
@@ -195,14 +195,14 @@ Here the example used cell-like identification names, but you can basically set 
 
 The type constants are the following:
 - `TYPE_NUMBER`; meaning it should be interpreted as a number (will be cast as a `double`).
-- `TYPE_RATE`; meaning it should be interpreted as a rate (generally a number between 0 and 1 ; will be cast as a `double`).
+- `TYPE_BOOLEAN`; meaning it should be interpreted as a boolean (`true` or `false` ; will be cast as a `bool`).
 - `TYPE_STRING`; meaning it should be interpreted as a pointer of char (will be cast as a `char *`).
 - `TYPE_DATE`; meaning it should be interpreted as a UNIX timestamp (will be cast as a `long`).
 
 > **NOTE:**  
 > It is highly recommended to use the functions that create a variable for you:
 > - `insert_new_number_variable(formula_context context, char *id, double value)`;
-> - `insert_new_rate_variable(formula_context context, char *id, double value)`;
+> - `insert_new_boolean__variable(formula_context context, char *id, bool value)`;
 > - `insert_new_string_variable(formula_context context, char *id, char *value)` and
 > - `insert_new_date_variable(formula_context context, char *id, unsigned long value)`.
 
@@ -258,6 +258,12 @@ Once all preliminary tasks accomplished, the result of the formula can finally b
 Here's what it would give on our example:
 ![dfs.gif](doc/dfs.gif)
 
+## Usage tips!
+Those tips will allow you to make a better use of the library.
+
+1. Choosing the right order for your formula variables:  
+As you might have noticed, there is no mention of a system to access rapidly each variable within the context. That means the accession is actually sequential, looking for each value one after the other. It is made this way because when creating the library, dealing with huge amounts of formula variables wasn't a key element. So basically, if you're using lots of variables for your formula(s) and your calculations become slow, try to reorganise them, so that the most frequently used ones can be accessed rapidly by putting them at the beginning of the array.
+
 ## Building the project
 In order to build the project on your own, you are going to need `make`.
 
@@ -273,9 +279,3 @@ More specifically, you have three options:
 
 ### Project dependencies
 Of course, the project depends on **Make**, but also on **Docker**, so you will need to have those two packages installed on your machine.
-
-## Usage tips!
-Those tips will allow you to make a better use of the library.
-
-1. Choosing the right order for your formula variables:  
-As you might have noticed, there is no mention of a system to access rapidly each variable within the context. That means the accession is actually sequential, looking for each value one after the other. It is made this way because when creating the library, dealing with huge amounts of formula variables wasn't a key element. So basically, if you're using lots of variables for your formula(s) and your calculations become slow, try to reorganise them, so that the most frequently used ones can be accessed rapidly by putting them at the beginning of the array.
