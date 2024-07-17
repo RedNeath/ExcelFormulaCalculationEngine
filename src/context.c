@@ -61,14 +61,14 @@ void fast_insert_new_number_variable(formula_context *context, char *id, double 
 	fast_insert_variable(context, variable);
 }
 
-void fast_insert_new_rate_variable(formula_context *context, char *id, double value) {
+void fast_insert_new_boolean_variable(formula_context *context, char *id, bool value) {
     // Allocating memory otherwise it will be freed at the end of this function
-    rate_variable *rate = malloc(sizeof(rate_variable));
-    rate->id = id;
-    rate->value = value;
-    rate->type = TYPE_RATE;
+    boolean_variable *boolean = malloc(sizeof(boolean_variable));
+    boolean->id = id;
+    boolean->value = value;
+    boolean->type = TYPE_BOOLEAN;
 
-	formula_variable variable = { NULL, rate, NULL, NULL, TYPE_RATE };
+	formula_variable variable = { NULL, boolean, NULL, NULL, TYPE_BOOLEAN };
 
 	fast_insert_variable(context, variable);
 }
@@ -105,8 +105,8 @@ void insert_variable(formula_context *context, formula_variable variable) {
 			id = variable.number_value->id;
 			break;
 
-		case TYPE_RATE:
-			id = variable.rate_value->id;
+		case TYPE_BOOLEAN:
+			id = variable.boolean_value->id;
 			break;
 
 		case TYPE_STRING:
@@ -151,14 +151,14 @@ void insert_new_number_variable(formula_context *context, char *id, double value
 	insert_variable(context, variable);
 }
 
-void insert_new_rate_variable(formula_context *context, char *id, double value) {
+void insert_new_boolean_variable(formula_context *context, char *id, bool value) {
     // Allocating memory otherwise it will be freed at the end of this function
-    rate_variable *rate = malloc(sizeof(rate_variable));
-    rate->id = id;
-    rate->value = value;
-    rate->type = TYPE_RATE;
+    boolean_variable *boolean = malloc(sizeof(boolean_variable));
+    boolean->id = id;
+    boolean->value = value;
+    boolean->type = TYPE_BOOLEAN;
 
-    formula_variable variable = { NULL, rate, NULL, NULL, TYPE_RATE };
+    formula_variable variable = { NULL, boolean, NULL, NULL, TYPE_BOOLEAN };
 
 	insert_variable(context, variable);
 }
@@ -199,8 +199,8 @@ formula_variable get_variable(formula_context *context, char *id) {
 			case TYPE_NUMBER:
 				if (strcmp(variable.number_value->id, id) == 0) return variable;
 				break;
-			case TYPE_RATE:
-				if (strcmp(variable.rate_value->id, id) == 0) return variable;
+			case TYPE_BOOLEAN:
+				if (strcmp(variable.boolean_value->id, id) == 0) return variable;
 				break;
 			case TYPE_STRING:
 				if (strcmp(variable.string_value->id, id) == 0) return variable;
@@ -233,7 +233,7 @@ void set_capacity(formula_context *context, unsigned long new_capacity) {
 
 void overwrite_variable(formula_variable *old_variable, formula_variable new_variable) {
 	old_variable->number_value = new_variable.number_value;
-	old_variable->rate_value = new_variable.rate_value;
+	old_variable->boolean_value = new_variable.boolean_value;
 	old_variable->string_value = new_variable.string_value;
 	old_variable->date_value = new_variable.date_value;
 
@@ -251,8 +251,8 @@ void free_context(formula_context *context) {
             case TYPE_NUMBER:
                 free(current.number_value);
                 break;
-            case TYPE_RATE:
-                free(current.rate_value);
+            case TYPE_BOOLEAN:
+                free(current.boolean_value);
                 break;
             case TYPE_STRING:
                 free(current.string_value);

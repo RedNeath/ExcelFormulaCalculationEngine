@@ -8,17 +8,18 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdbool.h>
 
 /* types */
 #define TYPE_NUMBER 1
-#define TYPE_RATE 2
+#define TYPE_BOOLEAN 2
 #define TYPE_STRING 3
 #define TYPE_DATE 4
 #define TYPE_SENTINEL 0
 
 /* structures */
 typedef struct number_variable number_variable;
-typedef struct rate_variable rate_variable;
+typedef struct boolean_variable boolean_variable;
 typedef struct string_variable string_variable;
 typedef struct date_variable date_variable;
 typedef struct formula_variable formula_variable;
@@ -30,9 +31,9 @@ struct number_variable {
     unsigned short type;
 };
 
-struct rate_variable {
+struct boolean_variable {
     char *id;
-    double value;
+    bool value;
     unsigned short type;
 };
 
@@ -51,7 +52,7 @@ struct date_variable {
 
 struct formula_variable {
     number_variable *number_value;
-    rate_variable *rate_value;
+    boolean_variable *boolean_value;
     string_variable *string_value;
     date_variable *date_value;
 
@@ -177,7 +178,7 @@ extern void fast_insert_variables(formula_context *context, formula_variable *va
  */
 extern void fast_insert_new_number_variable(formula_context *context, char *id, double value);
 /**
- * Insert a new rate typed variable to the context. This will allocate the memory and create the
+ * Insert a new boolean typed variable to the context. This will allocate the memory and create the
  * variable for you. This function doesn't check whether the id given for the variable is already in
  * the context or not.
  * Make sure you use this function only when you are sure that the variable you are trying to insert
@@ -194,9 +195,9 @@ extern void fast_insert_new_number_variable(formula_context *context, char *id, 
  *
  * @param formula_context context The context in which the rate variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
- * @param double value The rate value of the variable.
+ * @param bool value The boolean value of the variable.
  */
-extern void fast_insert_new_rate_variable(formula_context *context, char *id, double value);
+extern void fast_insert_new_boolean_variable(formula_context *context, char *id, bool value);
 /**
  * Insert a new string typed variable to the context. This will allocate the memory and create the
  * variable for you. This function doesn't check whether the id given for the variable is already in
@@ -320,7 +321,7 @@ extern void insert_variables(formula_context *context, formula_variable *variabl
  */
 extern void insert_new_number_variable(formula_context *context, char *id, double value);
 /**
- * Insert a new rate typed variable to the context. This will allocate the memory and create the
+ * Insert a new boolean typed variable to the context. This will allocate the memory and create the
  * variable for you. This function also checks whether the id of the given variable is already in
  * the context or not. If it is in the context, then its value will be overwritten.
  *
@@ -335,9 +336,9 @@ extern void insert_new_number_variable(formula_context *context, char *id, doubl
  *
  * @param formula_context context The context in which the rate variable should be added.
  * @param char *id The id of the variable, allowing you to name it in the formula
- * @param double value The rate value of the variable.
+ * @param bool value The boolean value of the variable.
  */
-extern void insert_new_rate_variable(formula_context *context, char *id, double value);
+extern void insert_new_boolean_variable(formula_context *context, char *id, bool value);
 /**
  * Insert a new string typed variable to the context. This will allocate the memory and create the
  * variable for you. This function also checks whether the id of the given variable is already in

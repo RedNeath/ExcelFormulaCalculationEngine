@@ -1,5 +1,5 @@
 //
-// Created by P15v on 03/06/2024.
+// Created by RedNeath on 03/06/2024.
 //
 
 #ifndef PARSER_H

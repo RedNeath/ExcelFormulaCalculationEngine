@@ -12,10 +12,10 @@ static formula_variable *declare_variables() {
     n1->value =  10;
     n1->type = TYPE_NUMBER;
 
-    rate_variable *r = malloc(sizeof(rate_variable));
+    boolean_variable *r = malloc(sizeof(boolean_variable));
     r->id = "A2";
-    r->value = 0.2;
-    r->type = TYPE_RATE;
+    r->value = true;
+    r->type = TYPE_BOOLEAN;
 
     string_variable *s = malloc(sizeof(string_variable));
     s->id = "A3";
@@ -33,7 +33,7 @@ static formula_variable *declare_variables() {
     n2->type = TYPE_NUMBER;
 
     formula_variable v1 = { n1, NULL, NULL, NULL, TYPE_NUMBER };
-    formula_variable v2 = { NULL, r, NULL, NULL, TYPE_RATE };
+    formula_variable v2 = { NULL, r, NULL, NULL, TYPE_BOOLEAN };
     formula_variable v3 = { NULL, NULL, s, NULL, TYPE_STRING };
     formula_variable v4 = { NULL, NULL, NULL, d, TYPE_DATE };
     formula_variable v5 = { n2, NULL, NULL, NULL, TYPE_NUMBER };
@@ -55,8 +55,8 @@ static MunitResult test_create_context_with_variables(const MunitParameter param
     munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10, ==, context.variables[0].number_value->value);
 
-    munit_assert_ushort(TYPE_RATE, ==, context.variables[1].type);
-    munit_assert_float(0.2, ==, context.variables[1].rate_value->value);
+    munit_assert_ushort(TYPE_BOOLEAN, ==, context.variables[1].type);
+    munit_assert_true(context.variables[1].boolean_value->value);
 
     munit_assert_ushort(TYPE_STRING, ==, context.variables[2].type);
     munit_assert_string_equal("string", context.variables[2].string_value->value);

@@ -57,6 +57,7 @@ Mkfile.old
 dkms.conf
 
 .idea/
+.vscode/
 
 # docker env archives
 env.tar.gz

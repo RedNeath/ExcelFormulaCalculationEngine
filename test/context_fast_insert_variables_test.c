@@ -14,13 +14,13 @@ static MunitResult test_fast_insert_variables(const MunitParameter params[], voi
     n->value = 10.75;
     n->type = TYPE_NUMBER;
 
-    rate_variable *r = malloc(sizeof(rate_variable));
-    r->id = "A2";
-    r->value = 0.5;
-    r->type = TYPE_RATE;
+    boolean_variable *b = malloc(sizeof(boolean_variable));
+    b->id = "A2";
+    b->value = false;
+    b->type = TYPE_BOOLEAN;
 
     formula_variable v1 = { n, NULL, NULL, NULL, TYPE_NUMBER };
-    formula_variable v2 = { NULL, r, NULL, NULL, TYPE_RATE };
+    formula_variable v2 = { NULL, b, NULL, NULL, TYPE_BOOLEAN };
     formula_variable *variables = malloc(5 * sizeof(formula_variable));
     variables[0] = v1;
     variables[1] = v2;
@@ -34,8 +34,8 @@ static MunitResult test_fast_insert_variables(const MunitParameter params[], voi
     munit_assert_ushort(TYPE_NUMBER, ==, context.variables[0].type);
     munit_assert_float(10.75, ==, context.variables[0].number_value->value);
 
-    munit_assert_ushort(TYPE_RATE, ==, context.variables[1].type);
-    munit_assert_float(0.5, ==, context.variables[1].rate_value->value);
+    munit_assert_ushort(TYPE_BOOLEAN, ==, context.variables[1].type);
+    munit_assert_false(context.variables[1].boolean_value->value);
 
 
     // Checking for sentinel presence

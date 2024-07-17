@@ -17,7 +17,7 @@ static MunitResult test_overwrite_variable(const MunitParameter params[], void *
 
     munit_assert_ushort(TYPE_STRING, ==, old.type);
     munit_assert_null(old.number_value);
-    munit_assert_null(old.rate_value);
+    munit_assert_null(old.boolean_value);
     munit_assert_null(old.date_value);
     munit_assert_string_equal("I am a string overwriting an old variable", old.string_value->value);
     munit_assert_string_equal("A1", old.string_value->id);
