@@ -14,8 +14,8 @@
 #include "mathematics_and_trigonometry/abs.h"
 
 typedef struct excel_function excel_function;
-typedef operand *(*invocation)(operand *);
-typedef unsigned short (*preprocessing)(operand *);
+typedef operand *(*invocation)(operand **, unsigned long);
+typedef unsigned short (*preprocessing)(operand **, unsigned long);
 
 struct excel_function {
     char *name;
@@ -23,10 +23,10 @@ struct excel_function {
     preprocessing preprocess;
 };
 
-operand *def_invoke(operand *) { return NULL; }
-unsigned short def_preprocess(operand *) { return PP_INCORRECT_VALUE; }
+operand *default_invoke(operand ** input, unsigned long arg_count) { return NULL; }
+unsigned short default_preprocess(operand ** input, unsigned long arg_count) { return PP_UNKNOWN_NAME; }
 // Add other functions below this comment
-static const excel_function excel_function_sentinel = { NULL, def_invoke, def_preprocess };
+static const excel_function excel_function_sentinel = { NULL, default_invoke, default_preprocess };
 static excel_function *function_list = NULL;
 
 void feed_function_list() {
@@ -38,6 +38,6 @@ void feed_function_list() {
 }
 
 extern excel_function dichotomous_function_search(unsigned int start, unsigned int end, char *function_name);
-extern unsigned int find_function(char *function_name);
+extern excel_function find_function(char *function_name);
 
 #endif //EXCELFORMULACALCULATIONENGINE_FUNCTIONS_FACADE_H

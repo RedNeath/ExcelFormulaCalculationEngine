@@ -6,14 +6,18 @@
 #define PRE_PROCESSOR_H
 
 #include "../parser.h"
+#include "../functions/functions_facade.h"
+#include "processor.h"
 
 // Pre-processing codes
 #define PP_OK 0
-#define PP_INCORRECT_VALUE 1
+#define PP_UNKNOWN_NAME 1
+#define PP_INCORRECT_VALUE 2
+#define PP_INCORRECT_ARG_COUNT 3
 
 typedef struct operand operand;
 typedef struct operation operation;
-typedef operand *(*calculation)(operand *input);
+typedef operand *(*calculation)(operand **input);
 
 struct operand {
     unsigned short type; // Using context types
@@ -28,7 +32,7 @@ struct operand {
 struct operation {
     unsigned short status; // Use PP constants there to get an error up to the root.
     calculation calculate; 
-    operand *operands;
+    operand **operands;
 };
 
 
@@ -48,6 +52,32 @@ struct operation {
  * @return The `operation` ready to be calculated, or information about the error encountered when
  *         preprocessing the token and its children.
  */
-extern operation preprocess(formula_token *token);
+extern operation *preprocess(formula_context *context, formula_token *token);
+
+extern operand **resolve_operands(formula_context *context, formula_token *token, unsigned long count);
+extern operand *resolve_boolean_operand(formula_token *token);
+extern operand *resolve_number_operand(formula_token *token);
+extern operand *resolve_string_operand(formula_token *token);
+extern operand *resolve_variable_operand(formula_context *context, formula_token *token);
+
+extern operation *preprocess_unary_operator(formula_token *token, operand **operands);
+extern operation *preprocess_negation(operand **operands);
+extern operation *preprocess_percent(operand **operands);
+extern operation *preprocess_binary_operator(formula_token *token, operand **operands);
+extern operation *preprocess_power(operand **operands);
+extern operation *preprocess_multiplication(operand **operands);
+extern operation *preprocess_division(operand **operands);
+extern operation *preprocess_addition(operand **operands);
+extern operation *preprocess_subtraction(operand **operands);
+extern operation *preprocess_concatenation(operand **operands);
+extern operation *preprocess_equality(operand **operands);
+extern operation *preprocess_strict_superiority(operand **operands);
+extern operation *preprocess_strict_inferiority(operand **operands);
+extern operation *preprocess_superiority(operand **operands);
+extern operation *preprocess_inferiority(operand **operands);
+extern operation *preprocess_difference(operand **operands);
+extern operation *preprocess_function(formula_token *token, operand **operands);
+
+extern void try_number_cast(operand *op);
 
 #endif //PRE_PROCESSOR_H
