@@ -19,7 +19,7 @@ operation *preprocess(formula_context *context, formula_token *token) {
             op = preprocess_binary_operator(token, operands);
             break;
         case TYPE_TOKEN_FUNCTION:
-            op = preprocess_function(token, operands);
+            op = preprocess_function(token, operands, child_count);
             break;
         
         default:
@@ -33,7 +33,7 @@ operand **resolve_operands(formula_context *context, formula_token *token, unsig
     if      (token->type == TYPE_TOKEN_UNARY_OPERATOR && count != 1) return NULL;
     else if (token->type == TYPE_TOKEN_BINARY_OPERATOR && count != 1) return NULL;
 
-    operand *operands = malloc((count + 1) * sizeof(operand *));
+    operand **operands = malloc((count + 1) * sizeof(operand *));
 
     unsigned long i = 0;
     while (i < count) {
@@ -121,7 +121,7 @@ operand *resolve_variable_operand(formula_context *context, formula_token *token
             break;
         
         case TYPE_STRING:
-            op->string_value = var.number_value->value;
+            op->string_value = var.string_value->value;
     }
 
     // If the variable hasn't been found, the operand will have TYPE_SENTINEL as type and no value.
@@ -145,7 +145,6 @@ operation *preprocess_unary_operator(formula_token *token, operand **operands) {
 }
 
 operation *preprocess_negation(operand **operands) {
-    char *stop;
     operation *op = malloc(sizeof(operation));
 
     if (operands[0]->type == TYPE_STRING) {
@@ -170,7 +169,6 @@ operation *preprocess_negation(operand **operands) {
 }
 
 operation *preprocess_percent(operand **operands) {
-    char *stop;
     operation *op = malloc(sizeof(operation));
 
     if (operands[0]->type == TYPE_STRING) {
@@ -181,7 +179,7 @@ operation *preprocess_percent(operand **operands) {
     if (
         operands[0]->type == TYPE_BOOLEAN ||
         operands[0]->type == TYPE_DATE ||
-        operands[0]->type == TYPE_NUMBER ||
+        operands[0]->type == TYPE_NUMBER
     ) {
         op->calculate = process_percent;
         op->operands = operands;
@@ -194,7 +192,7 @@ operation *preprocess_percent(operand **operands) {
     return op;
 }
 
-operation *preprocess_binary_operator(formula_token *token, operand **operand) {
+operation *preprocess_binary_operator(formula_token *token, operand **operands) {
     // Exactly two operands, if it is wrong then the result is wrong too
     operation *op;
 
@@ -221,13 +219,12 @@ operation *preprocess_binary_operator(formula_token *token, operand **operand) {
     return op;
 }
 
-operation *preprocess_power(operand **operands) {
-    char *stop;
+operation *preprocess_number_operator(calculation calculate, operand **operands) {
     operation *op = malloc(sizeof(operation));
     op->status = PP_OK;
 
     unsigned long i = 0;
-    while (operands[i]->type != TYPE_SENTINEL && op->status == PP_OK) {
+    while (operands[i] != TYPE_SENTINEL && op->status == PP_OK) {
         if (operands[i]->type == TYPE_STRING) {
             try_number_cast(operands[i]);
         }
@@ -243,29 +240,124 @@ operation *preprocess_power(operand **operands) {
     }
 
     if (op->status == PP_OK) {
-        op->calculate = process_power;
+        op->calculate = calculate;
         op->operands = operands;
     }
 
     return op;
 }
 
-operation *preprocess_function(formula_token *token, operand **operands) {
-    excel_function f = find_function(token->value); // No need to check: sentinel function is callable
-    unsigned short status_code = f.preprocess(operands, child_count);
-    if (code != PP_OK) {
+operation *preprocess_power(operand **operands) {
+    return preprocess_number_operator(process_power, operands);
+}
+
+operation *preprocess_multiplication(operand **operands) {
+    return preprocess_number_operator(process_multiplication, operands);
+}
+
+operation *preprocess_division(operand **operands) {
+    return preprocess_number_operator(process_division, operands);
+}
+
+operation *preprocess_addition(operand **operands) {
+    return preprocess_number_operator(process_addition, operands);
+}
+
+operation *preprocess_subtraction(operand **operands) {
+    return preprocess_number_operator(process_subtraction, operands);
+}
+
+operation *preprocess_concatenation(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->status = PP_OK;
+    
+    unsigned long i = 0;
+    while (operands[i]->type != TYPE_SENTINEL && op->status == PP_OK) {
+        if (operands[i]->type != TYPE_STRING) {
+            try_string_cast(operands[i]); // Should not fail, but who knows...
+        }
+
+        // Type may have been modified in the first if
+        if (operands[i]->type != TYPE_STRING) {
+            op->status = PP_INCORRECT_VALUE;
+        }
+        i++;
+    }
+
+    if (op->status == PP_OK) {
+        op->calculate = process_concatenation;
+        op->operands = operands;
+    }
+
+    return op;
+}
+
+operation *preprocess_equality(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_equality;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_strict_superiority(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_strict_superiority;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_strict_inferiority(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_strict_inferiority;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_superiority(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_superiority;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_inferiority(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_inferiority;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_difference(operand **operands) {
+    operation *op = malloc(sizeof(operation));
+    op->calculate = process_difference;
+    op->operands = operands;
+    op->status = PP_OK;
+    return op;
+}
+
+operation *preprocess_function(formula_token *token, operand **operands, unsigned long child_count) {
+    operation *op;
+    excel_function *f = find_function(token->value); // No need to check: sentinel function is callable
+    unsigned short status_code = f->preprocess(operands, child_count);
+    if (status_code != PP_OK) {
         free(operands);
         operands = NULL;
     }
 
     op = malloc(sizeof(operation));
-    op->calculate = f.invoke;
+    op->calculate = f->invoke;
     op->operands = operands;
     op->status = status_code;
     return op;
 }
 
 void try_number_cast(operand *op) {
+    char *stop;
     // Please use this only with string operands!
     double val = strtod(op->string_value, &stop);
     if (!*stop) {
@@ -273,4 +365,47 @@ void try_number_cast(operand *op) {
         op->number_value = val;
         free(op->string_value);
     }
+}
+
+void try_string_cast(operand *op) {
+    unsigned short len;
+    char *str;
+    switch(op->type) {
+        case TYPE_BOOLEAN:
+            len = op->boolean_value? 4: 5;
+            str = malloc((len + 1) * sizeof(char));
+            memcpy(str, op->boolean_value? "TRUE": "FALSE", len);
+            str[len] = '\0';
+
+            op->string_value = str;
+            op->type = TYPE_STRING;
+            break;
+        
+        case TYPE_DATE: // Should actually depend on the representation...
+            unsigned short max_long_length = 10;
+            str = malloc((max_long_length + 1) * sizeof(char));
+            sprintf(str, "%ld", op->date_value);
+
+            op->string_value = str;
+            op->type = TYPE_STRING;
+            break;
+        
+        case TYPE_NUMBER:
+            len = 32;
+            str = malloc((len + 1) * sizeof(char));
+            sprintf(str, "%.2f", op->number_value);
+
+            op->string_value = str;
+            op->type = TYPE_STRING;
+            break;
+    }
+}
+
+unsigned long get_child_count(formula_token *token) {
+    unsigned long count = 0;
+    while (token->children != NULL && token->children[count]->type != TYPE_SENTINEL) {
+        count++;
+    }
+
+    return count;
 }

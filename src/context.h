@@ -1,7 +1,7 @@
 //
 // Created by RedNeath on 23/05/2024.
 //
-
+#pragma once
 #ifndef CONTEXT_H
 #define CONTEXT_H
 

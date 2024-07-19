@@ -1,7 +1,7 @@
 //
 // Created by RedNeath on 16/07/2024.
 //
-
+#pragma once
 #ifndef ABS_H
 #define ABS_H
 

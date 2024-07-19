@@ -1,7 +1,7 @@
 //
 // Created by RedNeath on 03/06/2024.
 //
-
+#pragma once
 #ifndef PARSER_H
 #define PARSER_H
 

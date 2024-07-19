@@ -8,4 +8,4 @@ RUN apt-get update &&\
 WORKDIR /home/ubuntu/ExcelFormulaCalculationEngine
 
 ENTRYPOINT ["gcc"]
-CMD ["-Wall", "-shared", "-o", "bin/libefce.so", "-fPIC", "src/efce.c", "src/context.c", "src/parser.c", "src/functions/functions_facade.c"]
+CMD ["-Wall", "-shared", "-o", "bin/libefce.so", "-fPIC", "src/efce.c", "src/context.c", "src/parser.c", "src/functions/functions_facade.c", "src/functions/mathematics_and_trigonometry/*.c", "src/processing/pre_processor.c"]
