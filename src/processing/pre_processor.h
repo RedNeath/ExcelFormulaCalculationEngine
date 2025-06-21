@@ -86,5 +86,6 @@ extern void try_number_cast(operand *op);
 extern void try_string_cast(operand *op);
 
 extern unsigned long get_child_count(formula_token *token);
+extern unsigned long get_operand_count(operand **operands);
 
 #endif //PRE_PROCESSOR_H

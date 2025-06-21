@@ -162,7 +162,7 @@ formula_token *parse_power(formula_context *context, char *input) {
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 
@@ -212,7 +212,7 @@ formula_token *parse_multiplication_or_division(formula_context *context, char *
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 
@@ -262,7 +262,7 @@ formula_token *parse_addition_or_subtraction(formula_context *context, char *inp
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 
@@ -311,7 +311,7 @@ formula_token *parse_concatenation(formula_context *context, char *input) {
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 
@@ -365,7 +365,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 
@@ -408,7 +408,7 @@ formula_token *parse_comparison(formula_context *context, char *input) {
 
         token->value = token_value;
         token->type = TYPE_TOKEN_BINARY_OPERATOR;
-        token->children = malloc(sizeof(formula_token *));
+        token->children = malloc(2 * sizeof(formula_token *));
         token->children[0] = left_token;
         token->children[1] = right_token;
 

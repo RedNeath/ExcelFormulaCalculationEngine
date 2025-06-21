@@ -24,12 +24,15 @@ excel_function **get_function_list() {
 
 void feed_function_list() {
     // Please, make sure the functions you add are sorted lexicographically (order in dictionaries).
-    // Otherwise the dichotomous search will not work and your functions may not be found!!
+    // Otherwise, the dichotomous search will not work and your functions may not be found!!
     excel_function *abs_en = malloc(sizeof(excel_function));
+    excel_function *pi_en = malloc(sizeof(excel_function));
     abs_en->name = "ABS"; abs_en->invoke = abs_invoke; abs_en->preprocess = abs_preprocess;
+    pi_en->name = "PI"; pi_en->invoke = pi_invoke; pi_en->preprocess = pi_preprocess;
 
     function_list = malloc((FUNCTION_COUNT + 1) * sizeof(excel_function *));
     function_list[0] = abs_en;
+    function_list[1] = pi_en;
     function_list[FUNCTION_COUNT] = excel_function_sentinel();
 }
 

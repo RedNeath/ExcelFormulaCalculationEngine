@@ -9,13 +9,14 @@
 #include "../processing/pre_processor.h"
 
 #define FUNCTION_NONE 0
-#define FUNCTION_COUNT 1
+#define FUNCTION_COUNT 2
 
 typedef struct excel_function excel_function;
 typedef unsigned short (*preprocessing)(operand **, unsigned long);
 
 /* Import the functions */
 #include "mathematics_and_trigonometry/abs.h"
+#include "mathematics_and_trigonometry/pi.h"
 
 struct excel_function {
     char *name;

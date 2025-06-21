@@ -6,7 +6,8 @@
 
 operation *preprocess(formula_context *context, formula_token *token) {
     operation *op;
-    unsigned long child_count = get_child_count(token); // TODO
+    unsigned long child_count = get_child_count(token);
+    // if (child_count == 0) return NULL; Can't do that because we'd ignore parameterless functions such as PI().
 
     operand **operands = resolve_operands(context, token, child_count);
     if (operands == NULL) return NULL;
@@ -30,8 +31,9 @@ operation *preprocess(formula_context *context, formula_token *token) {
 }
 
 operand **resolve_operands(formula_context *context, formula_token *token, unsigned long count) {
-    if      (token->type == TYPE_TOKEN_UNARY_OPERATOR && count != 1) return NULL;
-    else if (token->type == TYPE_TOKEN_BINARY_OPERATOR && count != 1) return NULL;
+    if (token->type == TYPE_TOKEN_NUMBER || token->type == TYPE_TOKEN_STRING || token->type == TYPE_TOKEN_BOOLEAN ||
+        token->type == TYPE_TOKEN_VARIABLE) // Not treating types that are necessarily leaves.
+        return NULL;
 
     operand **operands = malloc((count + 1) * sizeof(operand *));
 
@@ -132,9 +134,9 @@ operation *preprocess_unary_operator(formula_token *token, operand **operands) {
     // Only one operand, if it is wrong then the result is wrong too
     operation *op;
 
-    if (operands[0]->type == TYPE_SENTINEL) {
+    if (get_operand_count(operands) != 1) {
         op = malloc(sizeof(operation));
-        op->status = PP_UNKNOWN_NAME;
+        op->status = PP_INCORRECT_ARG_COUNT;
         return op;
     }
 
@@ -196,9 +198,9 @@ operation *preprocess_binary_operator(formula_token *token, operand **operands) 
     // Exactly two operands, if it is wrong then the result is wrong too
     operation *op;
 
-    if (operands[0]->type == TYPE_SENTINEL || operands[1]->type == TYPE_SENTINEL) {
+    if (get_operand_count(operands) != 2) {
         op = malloc(sizeof(operation));
-        op->status = PP_UNKNOWN_NAME;
+        op->status = PP_INCORRECT_ARG_COUNT;
         return op;
     }
 
@@ -404,6 +406,15 @@ void try_string_cast(operand *op) {
 unsigned long get_child_count(formula_token *token) {
     unsigned long count = 0;
     while (token->children != NULL && token->children[count]->type != TYPE_SENTINEL) {
+        count++;
+    }
+
+    return count;
+}
+
+unsigned long get_operand_count(operand **operands) {
+    unsigned long count = 0;
+    while (operands[count]->type != TYPE_SENTINEL) {
         count++;
     }
 

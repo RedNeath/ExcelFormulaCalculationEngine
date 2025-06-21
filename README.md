@@ -269,13 +269,14 @@ In order to build the project on your own, you are going to need `make`.
 
 More specifically, you have three options:
 - The `make` command, at the root of the project, which will simply compile a version of the library as a shared object (.so) out in the `bin` folder.
-- The `make tests` command, at the root too, which will build the library, like the previous command, but the tests also, and start executing them.
-- The `make install` command, at the root, which will build the library, and move it to your `/usr/local/lib/` directory, enabling you to use it in your projects.
+- The `make tests-linux` command, at the root too, which will build the library, like the previous command, but the tests also, and start executing them (only for linux devices).
+- ~~The `make install` command, at the root, which will build the library, and move it to your `/usr/local/lib/` directory, enabling you to use it in your projects.~~
+- The `make clean` command, at the root of the project, which will clean the project of all compiled files.
 
-> **NOTE:**  
-> The `make install` needs access to a directory owned by the root user, therefore it will need root permissions to work. Once installed, to include it in your project, add the `-lefce` option when compiling. If it doesn't work, try to verify that your linker searches in your `/usr/local/lib` directory and add it in your library search path if it isn't.
+> ~~**NOTE:**~~ (install command not supported anymore, may come back later)  
+> ~~The `make install` needs access to a directory owned by the root user, therefore it will need root permissions to work. Once installed, to include it in your project, add the `-lefce` option when compiling. If it doesn't work, try to verify that your linker searches in your `/usr/local/lib` directory and add it in your library search path if it isn't.~~
 > 
-> Also, this command is platform specific, contrarily to the two preceding ones. Sorry to put it that way, but as I don't use Windows on a regular basis, I will not document a way to install the library on that platform for now, so you will have to install it by yourself.
+> ~~Also, this command is platform specific, contrarily to the two preceding ones. Sorry to put it that way, but as I don't use Windows on a regular basis, I will not document a way to install the library on that platform for now, so you will have to install it by yourself.~~
 
 ### Project dependencies
-Of course, the project depends on **Make**, but also on **Docker**, so you will need to have those two packages installed on your machine.
+Of course, the project depends on **Make**, so you will need to have this package installed on your machine.

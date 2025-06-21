@@ -1,29 +1,29 @@
 wd != pwd
 
-all:
-	mkdir -p bin
-	docker build -t excel-formula-calculation-engine ./docker/build
-	docker run -d --rm \
-		-v $(wd):/home/ubuntu/ExcelFormulaCalculationEngine \
-		excel-formula-calculation-engine
+all:build-linux
 
-tests:
+build-linux:
 	mkdir -p bin
-	chmod a+x ./test/exec.sh
-	if [ ! -d ./log ]; then mkdir log; touch ./log/error-report.log; fi
-	docker build -t excel-formula-calculation-engine-tests ./docker/tests
-	-docker stop efce_test
-	-docker rm efce_test
-	docker run -d --name efce_test \
-		-v $(wd):/home/ubuntu/ExcelFormulaCalculationEngine \
-		excel-formula-calculation-engine-tests
-	docker logs -f efce_test
+	gcc -Wall -shared \
+ 		-o bin/libefce.so \
+ 		-fPIC \
+ 		src/efce.c \
+ 		src/context.c \
+ 		src/parser.c \
+ 		src/processing/pre_processor.c \
+ 		src/functions/functions_facade.c \
+ 		src/functions/mathematics_and_trigonometry/*.c
 
-install: all
-	echo "Don't forget to run this command as a superuser!"
-	echo "Waiting for the compilation to end... If the process fails, try to edit the Makefile by increasing the \
-waiting time"
-	sleep 10
-	rm /usr/local/lib/libefce.so -f
-	cp bin/libefce.so /usr/local/lib/
-	ldconfig # Updating the linker
+tests-linux:
+	mkdir -p bin
+	gcc -Wall -c -fPIC src/*.c && \
+		ar rcs lib/libefce.a *.o && \
+		rm *.o && \
+		gcc -Wall -L$(wd)/lib -o bin/tests test/tests.c -lmunit -lefce
+	./bin/tests
+	rm lib/libefce.a
+	rm bin/tests
+
+clean:
+	rm -Rf bin
+	rm lib/libefce.a
